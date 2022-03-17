@@ -1,8 +1,9 @@
+import React, {useEffect} from 'react';
+import {Image} from 'react-native';
+
 import {AllStackScreenProps} from '@navigators/all-stack';
 import {IMAGE} from '@constants/image-path';
-import React, {useEffect} from 'react';
-import FixedContainer from '@components/fixed-container';
-import {Image} from 'react-native';
+import FixedContainer from '@components/FixContainer';
 import {WIDTH_SCALE} from '@constants/constants';
 
 const Splash = (prop: AllStackScreenProps<'Splash'>) => {

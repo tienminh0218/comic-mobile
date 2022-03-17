@@ -1,12 +1,10 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import React from 'react';
-import Icon from 'react-native-vector-icons/Octicons';
-
 import Discover from '@screens/discover';
 import Home from '@screens/home';
 import Profile from '@screens/profile';
 import Search from '@screens/search';
-import {Text, View} from 'react-native';
+import React from 'react';
+import Icon from 'react-native-vector-icons/Octicons';
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
@@ -28,16 +26,15 @@ const BottomTab = () => {
         tabBarLabelPosition: 'below-icon',
       }}>
       <Screen
-        name="Home"
+        name="Trang chủ"
         component={Home}
         options={{
-          tabBarIcon: ({focused, color, size}) =>
-            getIcon('home', {color, size}),
+          tabBarIcon: ({color, size}) => getIcon('home', {color, size}),
         }}
         key="Home"
       />
       <Screen
-        name="Discover"
+        name="Khám phá"
         component={Discover}
         options={{
           tabBarIcon: ({color, size}) => getIcon('three-bars', {color, size}),
@@ -45,7 +42,7 @@ const BottomTab = () => {
         key="Discover"
       />
       <Screen
-        name="Search"
+        name="Tìm kiếm"
         component={Search}
         options={{
           tabBarIcon: ({color, size}) => getIcon('search', {color, size}),
@@ -53,7 +50,7 @@ const BottomTab = () => {
         key="Search"
       />
       <Screen
-        name="Profile"
+        name="Cá nhân"
         component={Profile}
         options={{
           tabBarIcon: ({color, size}) => getIcon('person', {color, size}),
