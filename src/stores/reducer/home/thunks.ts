@@ -7,7 +7,6 @@ export const loadData = createAsyncThunk<HomeState>(
   async () => {
     const res = await API.get('/home');
     if (res.status === 200) {
-      console.log('data from fetch', res.data);
       return res.data;
     }
 

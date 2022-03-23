@@ -1,23 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, RefreshControl, ScrollView, Text, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Octicons';
-import FastImage from 'react-native-fast-image';
-
 import FixedContainer from '@components/FixContainer';
-import {
-  HEIGHT,
-  height,
-  HEIGHT_SCALE,
-  WIDTH_SCALE,
-} from '@constants/constants';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { pColor } from '@constants/color';
-import { fromNowDate } from '@utils/moment';
-import { useAppDispatch, useAppSelector } from '@stores/app/type-hook';
-import { loadData } from '@stores/features/home/thunks';
-import { RootState } from '@stores/app/store';
-import { useSelector } from 'react-redux';
+import { HEIGHT_SCALE, WIDTH_SCALE } from '@constants/constants';
 import { ComicType } from '@models/comic';
+import { RootState } from '@stores/store/store';
+import { useAppSelector } from '@stores/store/storeHook';
+import { fromNowDate } from '@utils/moment';
+import React, { useCallback } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import Icon from 'react-native-vector-icons/Octicons';
+import { useAuth } from 'src/hooks/useAuth';
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -25,28 +25,40 @@ const wait = (timeout) => {
 
 const Home = () => {
   const [refreshing, setRefreshing] = React.useState(false);
-  const dispatch = useAppDispatch();
   const data = useAppSelector((state: RootState) => state.home.data);
-
-  useEffect(() => {
-    dispatch(loadData());
-  }, []);
+  const user = useAppSelector((state: RootState) => state.user.data);
+  const isLoading = useAppSelector((state: RootState) => state.home.isLoading);
+  const { signOut } = useAuth();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    console.log('he call me');
+    console.log('onRefresh');
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
+  if (isLoading)
+    return (
+      <FixedContainer
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator animating={true} color={pColor.black} />
+      </FixedContainer>
+    );
+
   return (
     <ScrollView
+      style={{
+        backgroundColor: 'black',
+      }}
       nestedScrollEnabled={true}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <FixedContainer
         style={{
-          backgroundColor: '#fff',
+          backgroundColor: pColor.white,
           paddingHorizontal: WIDTH_SCALE * 10,
         }}>
         <View
@@ -67,6 +79,36 @@ const Home = () => {
           </Text>
         </View>
 
+        <MyTouchableOpacity
+          onPress={signOut}
+          style={{
+            marginTop: WIDTH_SCALE * 20,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingBottom: WIDTH_SCALE * 20,
+          }}>
+          <View>
+            <Text
+              style={{
+                color: 'red',
+                fontSize: 20,
+                fontWeight: '600',
+              }}>
+              logout
+            </Text>
+
+            <Text
+              style={{
+                color: 'red',
+                fontSize: 20,
+                fontWeight: '600',
+              }}>
+              user id {user?.id}
+            </Text>
+          </View>
+        </MyTouchableOpacity>
+
         <RecommendList data={data.recommend} />
 
         <TopView title="Lượt xem" data={data.popular} />
@@ -85,10 +127,23 @@ interface TopViewProps {
 }
 
 const TopView = React.memo(({ title, data }: TopViewProps) => {
+  const colorRating = (index: number): string => {
+    switch (index + 1) {
+      case 1:
+        return '#CD342F';
+      case 2:
+        return '#1D5CFF';
+      case 3:
+        return '#00BE7A';
+      default:
+        return pColor.textColor2;
+    }
+  };
+
   const renderItem = useCallback(
     ({ item, index }) => {
       return (
-        <View
+        <MyTouchableOpacity
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -96,14 +151,17 @@ const TopView = React.memo(({ title, data }: TopViewProps) => {
           }}>
           <Text
             style={{
+              fontSize: 14,
+              fontWeight: '600',
               marginRight: WIDTH_SCALE * 10,
+              color: colorRating(index),
             }}>
             {index + 1}
           </Text>
           <MyTouchableOpacity
             style={{
-              width: WIDTH_SCALE * 20,
-              height: WIDTH_SCALE * 25,
+              width: WIDTH_SCALE * 35,
+              height: WIDTH_SCALE * 40,
               borderRadius: 4,
               overflow: 'hidden',
               marginRight: WIDTH_SCALE * 10,
@@ -119,8 +177,15 @@ const TopView = React.memo(({ title, data }: TopViewProps) => {
               resizeMode={'cover'}
             />
           </MyTouchableOpacity>
-          <Text>{item.name.vnName}</Text>
-        </View>
+          <Text
+            style={{
+              color: pColor.textColor2,
+              fontSize: 14,
+              fontWeight: '600',
+            }}>
+            {item.name.vnName}
+          </Text>
+        </MyTouchableOpacity>
       );
     },
     [data],
@@ -160,12 +225,11 @@ const ListItem = React.memo(({ title, data }: ListItemProps) => {
       const lastChap = item.listChapter[item.listChapter.length - 1];
       return (
         <MyTouchableOpacity
-          style={{ marginRight: 10, width: WIDTH_SCALE * 100 }}>
+          style={{ marginRight: 15, width: WIDTH_SCALE * 120 }}>
           <MyTouchableOpacity
             style={{
-              width: WIDTH_SCALE * 100,
               height: WIDTH_SCALE * 150,
-              borderRadius: 15,
+              borderRadius: 6,
               overflow: 'hidden',
             }}>
             <FastImage
@@ -179,6 +243,7 @@ const ListItem = React.memo(({ title, data }: ListItemProps) => {
               resizeMode={'cover'}
             />
           </MyTouchableOpacity>
+
           <View style={{ marginTop: 2 }}>
             <Text
               style={{
@@ -267,18 +332,20 @@ const RecommendList = React.memo(({ data }: RecommendListProps) => {
   const renderItem = useCallback(
     ({ item, index }) => {
       return (
-        <MyTouchableOpacity>
+        <MyTouchableOpacity
+          style={{
+            marginRight: 10,
+          }}>
           <View
             style={{
               padding: WIDTH_SCALE * 10,
-              height: WIDTH_SCALE * 150,
+              height: WIDTH_SCALE * 170,
               width: WIDTH_SCALE * 300,
               borderRadius: 10,
               overflow: 'hidden',
               position: 'relative',
               justifyContent: 'flex-end',
               backgroundColor: colorItem(index),
-              marginRight: 10,
             }}>
             <Text
               style={{

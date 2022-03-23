@@ -1,7 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { ComicType } from '@models/comic';
-import type { RootState } from '@stores/app/store';
 import { loadData } from './thunks';
 
 export interface HomeState {
@@ -13,6 +12,7 @@ export interface HomeState {
 
 interface initStateType {
   data: HomeState;
+  isLoading: boolean;
 }
 
 const initialState: initStateType = {
@@ -22,6 +22,7 @@ const initialState: initStateType = {
     lastUpdated: [],
     newSeries: [],
   },
+  isLoading: false,
 };
 
 export const homeSlice = createSlice({
@@ -29,8 +30,15 @@ export const homeSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(loadData.pending, (state) => {
+      state.isLoading = true;
+    });
     builder.addCase(loadData.fulfilled, (state, action) => {
       state.data = action.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(loadData.rejected, (state) => {
+      state.isLoading = false;
     });
   },
 });

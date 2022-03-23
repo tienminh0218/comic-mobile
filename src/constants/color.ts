@@ -5,4 +5,6 @@ export const pColor = {
   textColor4: '#d09a17',
   black: '#000',
   white: '#fff',
+  facebookBg: '#4338ca',
+  googleBg: '#dc2626',
 };
