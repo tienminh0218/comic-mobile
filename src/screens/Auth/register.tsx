@@ -3,7 +3,11 @@ import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { pColor } from '@constants/color';
 import { WIDTH_SCALE } from '@constants/constants';
 import { IMAGE } from '@constants/image-path';
-import { AllStackScreenProps } from '@navigators/all-stack';
+import {
+  AllStackScreenProps,
+  AllStackScreensParams,
+} from '@navigators/all-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Image, Text, View } from 'react-native';
@@ -65,67 +69,6 @@ const Register = (props: AllStackScreenProps<'Register'>) => {
         </View>
 
         <FormInput />
-
-        {/* <MyTouchableOpacity
-          style={{
-            width: '80%',
-            backgroundColor: pColor.facebookBg,
-            paddingVertical: WIDTH_SCALE * 10,
-            borderRadius: 5,
-            marginBottom: WIDTH_SCALE * 5,
-            marginTop: WIDTH_SCALE * 30,
-          }}>
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <Icon name="facebook" size={35} color={pColor.white} />
-          </View>
-          <Text
-            style={{
-              color: pColor.white,
-              fontSize: 16,
-              textAlign: 'center',
-              fontWeight: '600',
-            }}>
-            Facebook
-          </Text>
-        </MyTouchableOpacity>
-
-        <MyTouchableOpacity
-          style={{
-            width: '80%',
-            backgroundColor: pColor.googleBg,
-            paddingVertical: WIDTH_SCALE * 10,
-            borderRadius: 5,
-            position: 'relative',
-          }}>
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <Icon name="google" size={35} color={pColor.white} />
-          </View>
-          <Text
-            style={{
-              color: pColor.white,
-              fontSize: 16,
-              textAlign: 'center',
-              fontWeight: '600',
-            }}>
-            Google
-          </Text>
-        </MyTouchableOpacity> */}
       </View>
     </FixedContainer>
   );
@@ -138,8 +81,10 @@ const FormInput = React.memo(() => {
     defaultValues: {
       email: '',
       password: '',
+      firstName: '',
+      lastName: '',
     },
-    mode: 'onChange',
+    mode: 'onBlur',
   });
 
   const handleShowPassword = useCallback(() => {
@@ -167,6 +112,11 @@ const FormInput = React.memo(() => {
               required: {
                 value: true,
                 message: 'Email không được để trống',
+              },
+              pattern: {
+                value:
+                  /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                message: 'Vui lòng nhập email hợp lệ',
               },
             },
             textInputProps: {
@@ -211,6 +161,10 @@ const FormInput = React.memo(() => {
                 value: 20,
                 message: 'Tên ít hơn 2 kí tự',
               },
+              pattern: {
+                value: /^([^0-9]*)$/,
+                message: 'Tên không bao gồm số',
+              },
             },
             textInputProps: {
               style: {},
@@ -233,6 +187,10 @@ const FormInput = React.memo(() => {
               maxLength: {
                 value: 20,
                 message: 'Họ ít hơn 2 kí tự',
+              },
+              pattern: {
+                value: /^([^0-9]*)$/,
+                message: 'Họ không bao gồm số',
               },
             },
             textInputProps: {

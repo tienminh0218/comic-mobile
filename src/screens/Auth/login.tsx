@@ -16,6 +16,7 @@ import { AllStackScreenProps } from '@navigators/all-stack';
 
 const Login = (props: AllStackScreenProps<'Login'>) => {
   const { navigation } = props;
+  const { signInWithFacebook, signInWithGoogle } = useAuth();
 
   return (
     <FixedContainer
@@ -64,7 +65,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
           paddingVertical: WIDTH_SCALE * 10,
           borderRadius: 5,
           marginBottom: WIDTH_SCALE * 5,
-          marginTop: WIDTH_SCALE * 30,
+          marginTop: WIDTH_SCALE * 15,
         }}>
         <Text
           style={{
@@ -78,6 +79,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
       </MyTouchableOpacity>
 
       <MyTouchableOpacity
+        onPress={signInWithFacebook}
         style={{
           width: '80%',
           backgroundColor: pColor.facebookBg,
@@ -108,6 +110,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
       </MyTouchableOpacity>
 
       <MyTouchableOpacity
+        onPress={signInWithGoogle}
         style={{
           width: '80%',
           backgroundColor: pColor.googleBg,
@@ -222,20 +225,16 @@ const FormInput = React.memo(() => {
           Đăng nhập
         </Text>
       </MyTouchableOpacity>
-      <MyTouchableOpacity
-        style={{
-          width: WIDTH_SCALE * 100,
-          alignSelf: 'flex-end',
-        }}>
+      <View>
         <Text
           style={{
-            textAlign: 'right',
             marginTop: 10,
+            textAlign: 'center',
             color: pColor.black,
           }}>
-          Quên mật khẩu.
+          Hoặc
         </Text>
-      </MyTouchableOpacity>
+      </View>
     </View>
   );
 });

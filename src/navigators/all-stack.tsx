@@ -5,8 +5,7 @@ import {
 import Login from '@screens/Auth/login';
 import Register from '@screens/Auth/register';
 import Splash from '@screens/splash';
-import React, { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import React from 'react';
 import BottomTab from './bottom-tab';
 
 export type AllStackScreensParams = {
@@ -28,8 +27,10 @@ const AllStack = () => {
     <Navigator screenOptions={{ headerShown: false }}>
       <Screen name="Splash" key={'Splash'} component={Splash} />
 
+      {/* Auth stack */}
       <Screen name="Login" key={'Login'} component={Login} />
       <Screen name="Register" key={'Register'} component={Register} />
+
       <Screen name="BottomTab" key={'BottomTab'} component={BottomTab} />
     </Navigator>
   );

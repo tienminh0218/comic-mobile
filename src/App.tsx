@@ -11,7 +11,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import store from '@stores/store/store';
 import { pColor } from '@constants/color';
 import { useAppDispatch } from '@stores/store/storeHook';
-import { updateUser } from '@stores/reducer/user/userSlice';
+import { clearUser, updateUser } from '@stores/reducer/user/userSlice';
 
 let persistor = persistStore(store);
 
@@ -36,6 +36,7 @@ const Main = React.memo(() => {
         };
         dispatch(updateUser(data));
       }
+      // dispatch(clearUser());
       console.log('subscriber here --> ', user);
     });
     return subscriber;
