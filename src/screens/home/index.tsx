@@ -3,6 +3,7 @@ import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { pColor } from '@constants/color';
 import { HEIGHT_SCALE, WIDTH_SCALE } from '@constants/constants';
 import { ComicType } from '@models/comic';
+import { AllStackScreenProps } from '@navigators/all-stack';
 import { RootState } from '@stores/store/store';
 import { useAppSelector } from '@stores/store/storeHook';
 import { fromNowDate } from '@utils/moment';
@@ -18,12 +19,16 @@ import {
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Octicons';
 import { useAuth } from 'src/hooks/useAuth';
+import { Edge } from 'react-native-safe-area-context';
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
 };
 
-const Home = () => {
+const edge: Edge[] = ['bottom', 'top'];
+
+const Home = (props: AllStackScreenProps<'Home'>) => {
+  const { navigation } = props;
   const [refreshing, setRefreshing] = React.useState(false);
   const data = useAppSelector((state: RootState) => state.home.data);
   const user = useAppSelector((state: RootState) => state.user.data);
@@ -39,6 +44,7 @@ const Home = () => {
   if (isLoading)
     return (
       <FixedContainer
+        edges={edge}
         style={{
           justifyContent: 'center',
           alignItems: 'center',
@@ -57,6 +63,7 @@ const Home = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <FixedContainer
+        edges={edge}
         style={{
           backgroundColor: pColor.white,
           paddingHorizontal: WIDTH_SCALE * 10,
@@ -78,6 +85,25 @@ const Home = () => {
             Trang chủ
           </Text>
         </View>
+
+        <MyTouchableOpacity
+          onPress={() => navigation.navigate('Detail')}
+          style={{
+            marginTop: WIDTH_SCALE * 20,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingBottom: WIDTH_SCALE * 20,
+          }}>
+          <Text
+            style={{
+              color: 'red',
+              fontSize: 20,
+              fontWeight: '600',
+            }}>
+            Test detail
+          </Text>
+        </MyTouchableOpacity>
 
         <MyTouchableOpacity
           onPress={signOut}

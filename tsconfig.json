@@ -46,6 +46,7 @@
       "@screens/*": ["./src/screens/*"],
       "@stores/*": ["./src/stores/*"],
       "@services/*": ["./src/services/*"],
+      "@hooks/*": ["./src/hooks/*"],
       "@models/*": ["./src/models/*"],
       "@utils/*": ["./src/utils/*"]
     },

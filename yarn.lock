@@ -6256,6 +6256,13 @@ react-native-swiper@^1.6.0:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-switch-selector@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-switch-selector/-/react-native-switch-selector-2.2.0.tgz#75e28d694c702434b14468f04ee82edff96fb928"
+  integrity sha512-dbw5rOJqJIuhlzzmGCav1zeoidNVf5ES2jZtXltKItHdbx+SeXBOvRFLy7xbl2fg9pT121HMQ8lzx6qXyrrLEw==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-system-navigation-bar@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-native-system-navigation-bar/-/react-native-system-navigation-bar-1.0.2.tgz#c930eeb8f56429e8843e4c4f3ac23bbd57745b55"

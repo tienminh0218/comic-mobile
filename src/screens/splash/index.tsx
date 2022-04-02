@@ -1,3 +1,4 @@
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 import React, { useEffect } from 'react';
 import { Image } from 'react-native';
 
@@ -5,9 +6,9 @@ import { AllStackScreenProps } from '@navigators/all-stack';
 import { IMAGE } from '@constants/image-path';
 import FixedContainer from '@components/FixContainer';
 import { WIDTH_SCALE } from '@constants/constants';
-import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { useAppDispatch } from '@stores/store/storeHook';
 import { loadData } from '@stores/reducer/home/thunks';
+import { loadGenres } from '@stores/reducer/genre/thunks';
 
 const Splash = (prop: AllStackScreenProps<'Splash'>) => {
   const { navigation } = prop;
@@ -15,6 +16,7 @@ const Splash = (prop: AllStackScreenProps<'Splash'>) => {
 
   useEffect(() => {
     dispatch(loadData());
+    dispatch(loadGenres());
   }, []);
 
   useEffect(() => {

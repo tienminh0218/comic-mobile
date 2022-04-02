@@ -1,19 +1,16 @@
-import FixedContainer from '@components/FixContainer';
-import MyTouchableOpacity from '@components/MyTouchableOpacity';
-import { pColor } from '@constants/color';
-import { WIDTH_SCALE } from '@constants/constants';
-import { IMAGE } from '@constants/image-path';
-import {
-  AllStackScreenProps,
-  AllStackScreensParams,
-} from '@navigators/all-stack';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Image, Text, View } from 'react-native';
 import { Appbar, TextInput } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
-import { useAuth } from '../../hooks/useAuth';
+
+import FixedContainer from '@components/FixContainer';
+import MyTouchableOpacity from '@components/MyTouchableOpacity';
+import { pColor } from '@constants/color';
+import { WIDTH_SCALE } from '@constants/constants';
+import { IMAGE } from '@constants/image-path';
+import { AllStackScreenProps } from '@navigators/all-stack';
+import { useAuth } from 'src/hooks/useAuth';
 
 const Register = (props: AllStackScreenProps<'Register'>) => {
   const { navigation } = props;
