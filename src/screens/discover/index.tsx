@@ -4,7 +4,7 @@ import { SkypeIndicator } from 'react-native-indicators';
 import Icon from 'react-native-vector-icons/Octicons';
 
 import { RootState } from '@stores/store/store';
-import { useAppSelector } from '@stores/store/storeHook';
+import { useAppDispatch, useAppSelector } from '@stores/store/storeHook';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { pColor } from '@constants/color';
 import { AllStackScreenProps } from '@navigators/all-stack';
@@ -14,6 +14,8 @@ import { ComicType } from '@models/comic';
 import API from '@services/api';
 import FastImage from 'react-native-fast-image';
 import { ListGenre } from '../detail/index';
+import MySpinner from '@components/my-spinner';
+import { loadDetailComic } from '@stores/reducer/detail/actions';
 
 type Option = 'genre' | 'status' | 'date';
 interface ListSelected {
@@ -24,6 +26,7 @@ interface ListSelected {
 
 const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
   const [comics, setComics] = useState<ComicType[]>([]);
+  const dispatch = useAppDispatch();
   const genres = useAppSelector((state: RootState) => state.genre.data);
   const [listSelected, setListSelected] = useState<ListSelected>({
     genre: '',
@@ -83,6 +86,14 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
     })();
   }, []);
 
+  const navigateToDetail = useCallback(
+    (id: string) => {
+      dispatch(loadDetailComic(id));
+      navigation.navigate('Detail');
+    },
+    [dispatch, navigation],
+  );
+
   // console.log('listSelected', listSelected, comics);
 
   return (
@@ -110,7 +121,7 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
         type="date"
       />
 
-      <ListComic data={comics} />
+      <ListComic onGoToChap={navigateToDetail} data={comics} />
     </View>
   );
 };
@@ -173,13 +184,15 @@ const ItemFilter = React.memo(
 
 interface ListComicProps {
   data: ComicType[];
+  onGoToChap: (idComic: string) => void;
 }
 
-const ListComic = React.memo(({ data }: ListComicProps) => {
+const ListComic = React.memo(({ data, onGoToChap }: ListComicProps) => {
   const renderItem = useCallback(
     ({ item, index }) => {
       return (
         <MyTouchableOpacity
+          onPress={() => onGoToChap(item.id)}
           style={{
             paddingVertical: WIDTH_SCALE * 10,
             borderBottomWidth: 1,
@@ -190,6 +203,7 @@ const ListComic = React.memo(({ data }: ListComicProps) => {
             flexDirection: 'row',
           }}>
           <MyTouchableOpacity
+            onPress={() => onGoToChap(item.id)}
             style={{
               width: WIDTH_SCALE * 80,
               height: WIDTH_SCALE * 110,
