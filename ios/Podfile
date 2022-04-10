@@ -12,6 +12,8 @@ target 'comicMobile' do
     :hermes_enabled => true
   )
 
+  pod 'react-native-viewpager', :path => '../node_modules/@react-native-community/viewpager'
+
   target 'comicMobileTests' do
     inherit! :complete
     # Pods for testing

@@ -21,7 +21,7 @@ export const loadGenres = createAsyncThunk<GenreType[]>(
           data.push(result);
         });
       });
-    console.log('26969 ~ load genres from genres/loadData', data);
+    // console.log('26969 ~ load genres from genres/loadData', data);
 
     return data;
   },

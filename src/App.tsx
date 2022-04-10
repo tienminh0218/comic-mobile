@@ -4,14 +4,15 @@ import { useColorScheme } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
-import auth from '@react-native-firebase/auth';
 
+import auth from '@react-native-firebase/auth';
 import AllStack from '@navigators/all-stack';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import store from '@stores/store/store';
 import { pColor } from '@constants/color';
 import { useAppDispatch } from '@stores/store/storeHook';
-import { clearUser, updateUser } from '@stores/reducer/user/userSlice';
+import { updateUser } from '@stores/reducer/user/userSlice';
+import MySpinner from '@components/my-spinner';
 
 let persistor = persistStore(store);
 
@@ -47,6 +48,7 @@ const Main = React.memo(() => {
       loading={<ActivityIndicator animating={true} color={pColor.black} />}
       persistor={persistor}>
       <NavigationContainer theme={MyTheme}>
+        <MySpinner />
         <AllStack />
       </NavigationContainer>
     </PersistGate>

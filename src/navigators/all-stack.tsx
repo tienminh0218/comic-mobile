@@ -2,12 +2,13 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import Login from '@screens/Auth/login';
-import Register from '@screens/Auth/register';
+import Login from '@screens/auth/login';
+import Register from '@screens/auth/register';
 import Splash from '@screens/splash';
 import Detail from '@screens/detail';
 import React from 'react';
 import BottomTab from './bottom-tab';
+import ViewChap, { ViewChapProps } from '@screens/detail/view';
 
 export type AllStackScreensParams = {
   Splash: undefined;
@@ -16,6 +17,8 @@ export type AllStackScreensParams = {
   Login: undefined;
   Register: undefined;
   Detail: undefined;
+  Discover: undefined;
+  ViewChap: undefined | ViewChapProps;
 };
 
 export type AllStackScreens = keyof AllStackScreensParams;
@@ -30,6 +33,7 @@ const AllStack = () => {
     <Navigator screenOptions={{ headerShown: false }}>
       <Screen name="Splash" key={'Splash'} component={Splash} />
       <Screen name="Detail" key={'Detail'} component={Detail} />
+      <Screen name="ViewChap" key={'ViewChap'} component={ViewChap} />
 
       {/* Auth stack */}
       <Screen name="Login" key={'Login'} component={Login} />

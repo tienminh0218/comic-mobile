@@ -1,113 +1,48 @@
-import { FlatList, Text, View, ScrollView } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import React, { useCallback, useState } from 'react';
-import SwitchSelector from 'react-native-switch-selector';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 
 import FixedContainer from '@components/FixContainer';
 import CustomHeader from '@components/Header';
+import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { pColor } from '@constants/color';
-import { HEIGHT_SCALE, WIDTH_SCALE } from '@constants/constants';
+import { WIDTH_SCALE } from '@constants/constants';
+import { ComicType } from '@models/comic';
+import { AllStackScreenProps } from '@navigators/all-stack';
+import API from '@services/api';
 import { RootState } from '@stores/store/store';
 import { useAppSelector } from '@stores/store/storeHook';
 import { getGenres } from '@utils/getGenres';
-import MyTouchableOpacity from '@components/MyTouchableOpacity';
-import { ComicType } from '@models/comic';
+import MySpinner from '@components/my-spinner';
 
-const comic = {
-  id: '8Ty7UFpwrAOtC60KUYj7',
-  updatedAt: '2021-12-31T15:06:02.100Z',
-  author: ' Tomohito Oda',
-  status: 'Đang tiến hành',
-  listChapter: [
-    {
-      name: '1',
-      views: 3,
-      idChapter: '0f87e3a1-9de1-445e-b276-61c584902e8b',
-      createdAt: '12/31/2021',
-    },
-    {
-      name: '2',
-      views: 1,
-      idChapter: '11e363fc-1bbf-448c-83a0-946de0aa662f',
-      createdAt: '12/31/2021',
-    },
-    {
-      name: '3',
-      views: 1,
-      idChapter: 'ba7ff9dd-e9a2-4083-a7cf-8a17436d9793',
-      createdAt: '12/31/2021',
-    },
-    {
-      name: '4',
-      idChapter: '2e4417e5-4909-459d-b54e-c16d6606b3cd',
-      views: 1,
-      createdAt: '12/31/2021',
-    },
-    {
-      views: 1,
-      createdAt: '12/31/2021',
-      idChapter: 'e1c4f9d9-a166-44a4-b9a2-8442830260ec',
-      name: '5',
-    },
-  ],
-  interacts: {
-    bookMark: 0,
-    unlike: 0,
-    like: 0,
-    views: 43,
-  },
-  genres: ['comedy', 'romance', 'school_life', 'shounen', 'slice_of_life'],
-  describe:
-    "Tên khác: Komi-san can't speak well.; Komi-san has a communication disease.; Komi-san has poor communication skills.; Komi-san is asocial.; Komi-san is socially ill\nMột em dở giao tiếp, nhưng 1 khi đã nói thì.......",
-  nameFolder: 'komi_san_wa_comyushou_desu_20c1468b-0d7c-4e4a-ba18-02d998e8d633',
-  comments: [],
-  recommended: true,
-  createdAt: '2021-11-08T07:54:11.915Z',
-  name: {
-    orgName: 'Komi san wa Comyushou desu',
-    vnName: 'Komi-san wa Komyushou Desu',
-  },
-  deleted: false,
-  images: {
-    thumbnail: {
-      url: 'https://firebasestorage.googleapis.com/v0/b/comic-c193e.appspot.com/o/comics%2Fkomi_san_wa_comyushou_desu_20c1468b-0d7c-4e4a-ba18-02d998e8d633%2Fimages%2F_thumbnail.jpg?alt=media&token=cb404776-ed76-426a-a3a8-89ca7aa5ed8f',
-      fullPath:
-        'comics/komi_san_wa_comyushou_desu_20c1468b-0d7c-4e4a-ba18-02d998e8d633/images/_thumbnail.jpg',
-    },
-    banner: {
-      url: 'https://firebasestorage.googleapis.com/v0/b/comic-c193e.appspot.com/o/comics%2Fkomi_san_wa_comyushou_desu_20c1468b-0d7c-4e4a-ba18-02d998e8d633%2Fimages%2F_banner.jpg?alt=media&token=1a45fc42-a69e-48bb-96c3-028679eac9e7',
-      fullPath:
-        'comics/komi_san_wa_comyushou_desu_20c1468b-0d7c-4e4a-ba18-02d998e8d633/images/_banner.jpg',
-    },
-  },
-};
+const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
+  const detailState = useAppSelector((state: RootState) => state.detail);
 
-const SHOW_TYPE = {
-  LIST: 0,
-  DESCRIPTION: 1,
-};
-
-const options = [
-  { label: 'Danh sách chương', value: SHOW_TYPE.LIST },
-  { label: 'Giới thiệu', value: SHOW_TYPE.DESCRIPTION },
-];
-
-const Detail = () => {
-  const [selectedType, setSelectedType] = useState<number>(SHOW_TYPE.LIST);
-
-  const onSwitchSelectorPress = useCallback(
-    (value: number) => {
-      setSelectedType(value);
-    },
-    [selectedType],
-  );
-
-  console.log('selectedType', selectedType);
+  if (detailState.isLoading)
+    return (
+      <FixedContainer
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator animating={true} color={pColor.black} />
+      </FixedContainer>
+    );
 
   return (
     <FixedContainer>
       <CustomHeader />
-      <View>
+      <View
+        style={{
+          flex: 1,
+        }}>
         <View
           style={{
             // borderWidth: 1,
@@ -130,11 +65,12 @@ const Detail = () => {
                 height: '100%',
               }}
               source={{
-                uri: comic.images.thumbnail.url,
+                uri: detailState.data?.images?.thumbnail.url,
               }}
               resizeMode="cover"
             />
           </View>
+
           <View
             style={{
               flex: 1,
@@ -147,7 +83,7 @@ const Detail = () => {
                 fontSize: 16,
                 fontWeight: 'bold',
               }}>
-              {comic.name.vnName}
+              {detailState.data?.name.vnName}
             </Text>
             <Text
               style={{
@@ -155,7 +91,7 @@ const Detail = () => {
                 fontSize: 11,
                 marginBottom: WIDTH_SCALE * 5,
               }}>
-              Tên khác: {comic.name.orgName}
+              Tên khác: {detailState.data?.name.orgName}
             </Text>
             <View
               style={{
@@ -167,103 +103,148 @@ const Detail = () => {
                   color: pColor.textColor2,
                   fontSize: 12,
                 }}>
-                Tác giả: {comic.author}
+                Tác giả: {detailState.data?.author}
               </Text>
               <Text
                 style={{
                   color: pColor.textColor2,
                   fontSize: 12,
                 }}>
-                Trạng thái: {comic.status}
+                Trạng thái: {detailState.data?.status}
               </Text>
               <Text
                 style={{
                   color: pColor.textColor2,
                   fontSize: 12,
                 }}>
-                Lượt xem {comic.interacts.views}
+                Lượt xem {detailState.data?.interacts?.views || 0}
               </Text>
             </View>
 
-            <ListGenre data={comic.genres} />
+            <ListGenre data={detailState.data?.genres || []} />
           </View>
         </View>
 
-        <SwitchSelector
-          options={options}
-          initial={selectedType}
-          onPress={onSwitchSelectorPress}
+        <View
           style={{
-            marginTop: WIDTH_SCALE * 10,
-            // marginBottom: WIDTH_SCALE * 5,
-            elevation: 2,
-          }}
-          textColor={pColor.textColor2}
-          buttonColor="transparent"
-          selectedTextStyle={{
-            color: pColor.black,
-            fontSize: 14,
-            fontWeight: '600',
-          }}
-          borderRadius={0}
-          selectedTextContainerStyle={{
-            borderBottomWidth: 2,
-            borderBottomColor: pColor.black,
-            paddingVertical: HEIGHT_SCALE * 10,
-          }}
-        />
-
-        {selectedType === SHOW_TYPE.LIST ? (
-          <ListChapter data={comic as ComicType} />
-        ) : (
-          <View
-            style={{
-              padding: WIDTH_SCALE * 5,
-            }}>
-            <Text>{comic?.describe}</Text>
-          </View>
-        )}
+            flex: 1,
+          }}>
+          <ChapterInfo navigation={navigation} data={detailState.data!} />
+        </View>
       </View>
     </FixedContainer>
   );
 };
 
-interface ListChapterProps {
+interface ChapterInfoProps {
   data: ComicType;
+  navigation: any;
 }
 
-const ListChapter = React.memo(({ data }: ListChapterProps) => {
-  const renderItem = useCallback(
-    ({ item, index }) => {
-      return (
-        <MyTouchableOpacity
-          style={{
-            paddingHorizontal: WIDTH_SCALE * 15,
-            paddingVertical: WIDTH_SCALE * 6,
-            borderBottomWidth: 1,
-            borderBottomColor: pColor.textSubColor,
+const ChapterInfo = React.memo(({ data, navigation }: ChapterInfoProps) => {
+  const layout = useWindowDimensions();
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'list', title: 'Danh sách chương' },
+    { key: 'des', title: 'Giới thiệu' },
+  ]);
 
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <Text>{`${index + 1}. Chap ${item.name} `}</Text>
-          <Text>{item.createdAt}</Text>
-        </MyTouchableOpacity>
-      );
+  const getDetailChap = useCallback(
+    async (idChap: string) => {
+      try {
+        MySpinner.show();
+        const result = await API.get(`/titles/${data.id!}/views/${idChap}`);
+        MySpinner.hide();
+        navigation.navigate('ViewChap', {
+          ...result.data,
+        });
+      } catch (error) {
+        console.log('error from getDetailChap', error?.message);
+      }
     },
     [data],
   );
 
+  const ListChapter = useCallback(() => {
+    const renderItem = useCallback(
+      ({ item, index }) => {
+        return (
+          <MyTouchableOpacity
+            onPress={() => getDetailChap(item.idChapter)}
+            style={{
+              paddingHorizontal: WIDTH_SCALE * 15,
+              paddingVertical: WIDTH_SCALE * 6,
+              borderBottomWidth: 1,
+              borderBottomColor: pColor.textSubColor,
+
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Text style={{ color: pColor.textSubColor }}>{`${index + 1}. Chap ${
+              item.name
+            } `}</Text>
+            <Text style={{ color: pColor.textSubColor }}>{item.createdAt}</Text>
+          </MyTouchableOpacity>
+        );
+      },
+      [data],
+    );
+
+    return (
+      <FlatList
+        data={data.listChapter}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `${item?.idChapter}_${index}`}
+      />
+    );
+  }, [data]);
+
+  const Description = useCallback(() => {
+    return (
+      <View
+        style={{
+          padding: WIDTH_SCALE * 5,
+        }}>
+        <Text style={{ color: pColor.textSubColor }}>{data?.describe}</Text>
+      </View>
+    );
+  }, [data]);
+
+  const renderScene = useMemo(
+    () =>
+      SceneMap({
+        list: ListChapter,
+        des: Description,
+      }),
+    [data],
+  );
+
   return (
-    <FlatList
-      data={data?.listChapter || []}
-      renderItem={renderItem}
-      keyExtractor={(item, index) => `${item?.idChapter}_${index}`}
+    <TabView
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{ width: layout.width }}
+      renderTabBar={(props) => (
+        <TabBar
+          {...props}
+          indicatorStyle={{ backgroundColor: pColor.black }}
+          style={{
+            backgroundColor: 'white',
+            borderBottomWidth: 1,
+            borderTopWidth: 1,
+            borderTopColor: pColor.bgSubColor,
+            borderBottomColor: pColor.bgSubColor,
+          }}
+          inactiveColor={pColor.bgSubColor}
+          activeColor={pColor.black}
+        />
+      )}
     />
   );
 });
 
-const ListGenre = React.memo(({ data }: { data: string[] }) => {
+export const ListGenre = React.memo(({ data }: { data: string[] }) => {
   const listGenres = useAppSelector((state: RootState) => state.genre.data);
 
   return (

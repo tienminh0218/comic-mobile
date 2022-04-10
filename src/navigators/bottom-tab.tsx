@@ -1,11 +1,12 @@
+import Icon from 'react-native-vector-icons/Octicons';
+import { Alert } from 'react-native';
+import React from 'react';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Discover from '@screens/discover';
 import Home from '@screens/home';
 import Profile from '@screens/profile';
 import Search from '@screens/search';
-import React from 'react';
-import Icon from 'react-native-vector-icons/Octicons';
-import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '@stores/store/storeHook';
 import { RootState } from '@stores/store/store';
@@ -18,6 +19,9 @@ const BottomTab = () => {
 
   return (
     <Navigator
+      safeAreaInsets={{
+        bottom: 10,
+      }}
       screenOptions={{
         headerShown: false,
         tabBarStyle: {

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { ComicType } from '@models/comic';
-import { loadData } from './thunks';
+import { loadData } from './actions';
 
 export interface HomeState {
   recommend: ComicType[];

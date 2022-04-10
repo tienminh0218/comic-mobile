@@ -1,7 +1,7 @@
 import { GenreType } from '@models/genre';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { loadGenres } from './thunks';
+import { loadGenres } from './actions';
 
 interface initStateType {
   data: GenreType[];
