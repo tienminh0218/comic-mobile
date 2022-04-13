@@ -16,6 +16,7 @@ import FastImage from 'react-native-fast-image';
 import { ListGenre } from '../detail/index';
 import MySpinner from '@components/my-spinner';
 import { loadDetailComic } from '@stores/reducer/detail/actions';
+import FixedContainer from '@components/FixContainer';
 
 type Option = 'genre' | 'status' | 'date';
 interface ListSelected {
@@ -97,32 +98,32 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
   // console.log('listSelected', listSelected, comics);
 
   return (
-    <View>
+    <FixedContainer>
       <CustomHeader title="Thể loại" />
 
       <ItemFilter
         data={options}
         itemSelected={listSelected.genre}
-        handleSelected={handleChangeFilter}
+        onSelected={handleChangeFilter}
         type="genre"
       />
 
       <ItemFilter
         data={options2}
         itemSelected={listSelected.status}
-        handleSelected={handleChangeFilter}
+        onSelected={handleChangeFilter}
         type="status"
       />
 
       <ItemFilter
         data={options3}
         itemSelected={listSelected.date}
-        handleSelected={handleChangeFilter}
+        onSelected={handleChangeFilter}
         type="date"
       />
 
       <ListComic onGoToChap={navigateToDetail} data={comics} />
-    </View>
+    </FixedContainer>
   );
 };
 
@@ -131,21 +132,32 @@ interface ItemFilterProps {
     label: string;
     value: string | number;
   }[];
-  handleSelected: (value: string, type: Option) => void;
+  onSelected: (value: string, type: Option) => void;
   itemSelected: string | number;
   type: Option;
 }
 
 const ItemFilter = React.memo(
-  ({ handleSelected, data, type, itemSelected }: ItemFilterProps) => {
+  ({ onSelected, data, type, itemSelected }: ItemFilterProps) => {
+    const handleSelected = useCallback(
+      (value: string) => {
+        if (value === itemSelected) {
+          onSelected('', type);
+        } else {
+          onSelected(value, type);
+        }
+      },
+      [itemSelected, data],
+    );
+
     const renderItem = useCallback(
       ({ item, index }) => {
         return (
           <MyTouchableOpacity
-            onPress={() => handleSelected(item.value, type)}
+            onPress={() => handleSelected(item.value)}
             style={{
-              paddingHorizontal: 10,
-              paddingVertical: 5,
+              paddingHorizontal: 10 * WIDTH_SCALE,
+              paddingVertical: 5 * WIDTH_SCALE,
               marginRight: 10,
               borderRadius: 30,
               borderWidth: item.value === itemSelected ? 1 : 0,
@@ -199,7 +211,6 @@ const ListComic = React.memo(({ data, onGoToChap }: ListComicProps) => {
             borderBottomColor: pColor.bgSubColor,
             borderWidth: 1,
             borderColor: pColor.bgSubColor,
-
             flexDirection: 'row',
           }}>
           <MyTouchableOpacity
