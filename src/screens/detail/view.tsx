@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { FlatList, View, Pressable } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { FlatList, View, ScrollView, Text } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Octicons';
 
@@ -28,15 +28,20 @@ const ViewChap = (props: AllStackScreenProps<'ViewChap'>) => {
   const { navigation, route } = props;
   const { chapter, nextAndPrev, comic } = route.params as ViewChapProps;
   const [isShow, setIsShow] = useState(false);
+  const offset = useRef<number>(0);
 
-  const changeShowNav = useCallback(() => {
-    setIsShow(!isShow);
-  }, [isShow]);
+  const changeShowNav = useCallback(
+    (show: boolean) => {
+      setIsShow(show);
+    },
+    [isShow],
+  );
 
   const renderItem = useCallback(
     ({ item, index }) => {
       return (
         <View
+          key={`${item.nameFile}_${index}`}
           style={{
             width: '100%',
             height: 600,
@@ -57,24 +62,35 @@ const ViewChap = (props: AllStackScreenProps<'ViewChap'>) => {
     [chapter],
   );
 
+  const handleOnScroll = useCallback(
+    (e) => {
+      const currentOffset = e.nativeEvent.contentOffset.y;
+      changeShowNav(currentOffset < offset.current);
+      offset.current = currentOffset;
+    },
+    [changeShowNav, offset],
+  );
+
   return (
     <FixedContainer edges={['bottom']}>
       <CustomHeader
         title={comic.name.vnName}
         subTitle={`Chap ${chapter.nameChapter}`}
       />
-      <Pressable onPress={() => changeShowNav()}>
+      <ScrollView onScroll={handleOnScroll}>
         <View
           style={{
             position: 'relative',
           }}>
-          <FlatList
+          {/* <FlatList
             data={chapter.images}
             renderItem={renderItem}
             keyExtractor={(v, i) => `${v.nameFile}_${i}`}
-          />
+          /> */}
+
+          {chapter.images.map((item, index) => renderItem({ item, index }))}
         </View>
-      </Pressable>
+      </ScrollView>
       <CustomNavBottom
         idComic={comic?.id!}
         navigation={navigation}
