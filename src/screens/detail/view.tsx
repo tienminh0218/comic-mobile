@@ -119,7 +119,7 @@ const CustomNavBottom = React.memo(
           navigation.navigate('ViewChap', {
             ...result.data,
           });
-        } catch (error) {
+        } catch (error: any) {
           console.log('error from changeChapter', error?.message);
         }
       },

@@ -2,11 +2,12 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
+import React from 'react';
+
 import Login from '@screens/auth/login';
 import Register from '@screens/auth/register';
 import Splash from '@screens/splash';
 import Detail from '@screens/detail';
-import React from 'react';
 import BottomTab from './bottom-tab';
 import ViewChap, { ViewChapProps } from '@screens/detail/view';
 

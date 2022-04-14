@@ -1,18 +1,17 @@
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useCallback, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Image, Text, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
+import { FormBuilder } from 'react-native-paper-form-builder';
+
 import FixedContainer from '@components/FixContainer';
+import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { pColor } from '@constants/color';
 import { WIDTH_SCALE } from '@constants/constants';
 import { IMAGE } from '@constants/image-path';
-import React, { useCallback, useState } from 'react';
-import { Image, Text, View } from 'react-native';
-import { useForm } from 'react-hook-form';
-import { Button } from 'react-native-paper';
-import { FormBuilder } from 'react-native-paper-form-builder';
-import { TextInput, IconButton } from 'react-native-paper';
-import MyTouchableOpacity from '@components/MyTouchableOpacity';
-import auth from '@react-native-firebase/auth';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useAuth } from '../../hooks/useAuth';
 import { AllStackScreenProps } from '@navigators/all-stack';
+import { useAuth } from '@hooks/useAuth';
 
 const Login = (props: AllStackScreenProps<'Login'>) => {
   const { navigation } = props;

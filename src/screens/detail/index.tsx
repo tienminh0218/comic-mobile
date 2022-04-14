@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import Icon from 'react-native-vector-icons/Octicons';
 
 import FixedContainer from '@components/FixContainer';
 import CustomHeader from '@components/Header';
@@ -112,13 +113,50 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                 }}>
                 Trạng thái: {detailState.data?.status}
               </Text>
-              <Text
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                // backgroundColor: 'red',
+                marginTop: 5 * WIDTH_SCALE,
+              }}>
+              <View
                 style={{
-                  color: pColor.textColor2,
-                  fontSize: 12,
+                  marginRight: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                Lượt xem {detailState.data?.interacts?.views || 0}
-              </Text>
+                <Icon name={'eye'} color={pColor.textColor2} size={15} />
+                <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
+                  {' '}
+                  {detailState.data?.interacts?.views || 0}{' '}
+                </Text>
+              </View>
+              <View
+                style={{
+                  marginRight: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Icon name={'heart'} color={pColor.textColor2} size={15} />
+                <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
+                  {' '}
+                  {detailState.data?.interacts?.bookMark || 0}{' '}
+                </Text>
+              </View>
+              <View
+                style={{
+                  marginRight: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Icon name={'thumbsup'} color={pColor.textColor2} size={15} />
+                <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
+                  {' '}
+                  {detailState.data?.interacts?.like || 0}{' '}
+                </Text>
+              </View>
             </View>
 
             <ListGenre data={detailState.data?.genres || []} />
@@ -131,6 +169,59 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
           }}>
           <ChapterInfo navigation={navigation} data={detailState.data!} />
         </View>
+      </View>
+
+      <View
+        style={{
+          position: 'absolute',
+          height: 40 * WIDTH_SCALE,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderTopWidth: 0.5,
+          borderTopColor: pColor.bgSubColor,
+
+          flexDirection: 'row',
+        }}>
+        <MyTouchableOpacity
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRightWidth: 1,
+            borderRightColor: pColor.bgSubColor,
+          }}>
+          <Icon name={'heart'} color={pColor.textColor2} size={15} />
+        </MyTouchableOpacity>
+        <MyTouchableOpacity
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRightWidth: 1,
+            borderRightColor: pColor.bgSubColor,
+          }}>
+          <Icon name={'thumbsup'} color={pColor.textColor2} size={15} />
+        </MyTouchableOpacity>
+        <MyTouchableOpacity
+          style={{
+            height: '100%',
+            flex: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+            opacity: 0.4,
+          }}>
+          <Text
+            style={{
+              color: pColor.black,
+              fontWeight: '600',
+              fontSize: 16,
+            }}>
+            Đọc
+          </Text>
+        </MyTouchableOpacity>
       </View>
     </FixedContainer>
   );
@@ -158,7 +249,7 @@ const ChapterInfo = React.memo(({ data, navigation }: ChapterInfoProps) => {
         navigation.navigate('ViewChap', {
           ...result.data,
         });
-      } catch (error) {
+      } catch (error: any) {
         console.log('error from getDetailChap', error?.message);
       }
     },
@@ -225,6 +316,9 @@ const ChapterInfo = React.memo(({ data, navigation }: ChapterInfoProps) => {
       renderScene={renderScene}
       onIndexChange={setIndex}
       initialLayout={{ width: layout.width }}
+      style={{
+        paddingBottom: 40 * WIDTH_SCALE,
+      }}
       renderTabBar={(props) => (
         <TabBar
           {...props}
