@@ -12,132 +12,139 @@ import { WIDTH_SCALE } from '@constants/constants';
 import { IMAGE } from '@constants/image-path';
 import { AllStackScreenProps } from '@navigators/all-stack';
 import { useAuth } from '@hooks/useAuth';
+import CustomHeader from '@components/Header';
 
 const Login = (props: AllStackScreenProps<'Login'>) => {
   const { navigation } = props;
   const { signInWithFacebook, signInWithGoogle } = useAuth();
 
   return (
-    <FixedContainer
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
+    <FixedContainer>
+      <CustomHeader
+        title="Đăng nhập"
+        style={{ marginBottom: 15 * WIDTH_SCALE }}
+      />
       <View
         style={{
-          flexDirection: 'row',
+          justifyContent: 'center',
           alignItems: 'center',
         }}>
         <View
           style={{
-            width: WIDTH_SCALE * 50,
-            height: WIDTH_SCALE * 50,
-            marginBottom: WIDTH_SCALE * 10,
-            marginRight: 5,
+            flexDirection: 'row',
+            alignItems: 'center',
           }}>
-          <Image
+          <View
             style={{
-              width: '100%',
-              height: '100%',
-            }}
-            source={IMAGE.logo}
-            resizeMode="contain"
-          />
+              width: WIDTH_SCALE * 50,
+              height: WIDTH_SCALE * 50,
+              marginBottom: WIDTH_SCALE * 10,
+              marginRight: 5,
+            }}>
+            <Image
+              style={{
+                width: '100%',
+                height: '100%',
+              }}
+              source={IMAGE.logo}
+              resizeMode="contain"
+            />
+          </View>
+          <Text
+            style={{
+              fontSize: 24,
+              color: pColor.black,
+              fontWeight: 'bold',
+            }}>
+            CatManga
+          </Text>
         </View>
-        <Text
+
+        <FormInput />
+
+        <MyTouchableOpacity
+          onPress={() => navigation.navigate('Register')}
           style={{
-            fontSize: 24,
-            color: pColor.black,
-            fontWeight: 'bold',
+            width: '80%',
+            backgroundColor: pColor.textColor3,
+            paddingVertical: WIDTH_SCALE * 10,
+            borderRadius: 5,
+            marginBottom: WIDTH_SCALE * 5,
+            marginTop: WIDTH_SCALE * 15,
           }}>
-          CatManga
-        </Text>
+          <Text
+            style={{
+              color: pColor.white,
+              fontSize: 16,
+              textAlign: 'center',
+              fontWeight: '600',
+            }}>
+            Đăng ký
+          </Text>
+        </MyTouchableOpacity>
+
+        <MyTouchableOpacity
+          onPress={signInWithFacebook}
+          style={{
+            width: '80%',
+            backgroundColor: pColor.facebookBg,
+            paddingVertical: WIDTH_SCALE * 10,
+            borderRadius: 5,
+            marginBottom: WIDTH_SCALE * 5,
+          }}>
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Icon name="facebook" size={35} color={pColor.white} />
+          </View>
+          <Text
+            style={{
+              color: pColor.white,
+              fontSize: 16,
+              textAlign: 'center',
+              fontWeight: '600',
+            }}>
+            Facebook
+          </Text>
+        </MyTouchableOpacity>
+
+        <MyTouchableOpacity
+          onPress={signInWithGoogle}
+          style={{
+            width: '80%',
+            backgroundColor: pColor.googleBg,
+            paddingVertical: WIDTH_SCALE * 10,
+            borderRadius: 5,
+            position: 'relative',
+          }}>
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Icon name="google" size={35} color={pColor.white} />
+          </View>
+          <Text
+            style={{
+              color: pColor.white,
+              fontSize: 16,
+              textAlign: 'center',
+              fontWeight: '600',
+            }}>
+            Google
+          </Text>
+        </MyTouchableOpacity>
       </View>
-
-      <FormInput />
-
-      <MyTouchableOpacity
-        onPress={() => navigation.navigate('Register')}
-        style={{
-          width: '80%',
-          backgroundColor: pColor.textColor3,
-          paddingVertical: WIDTH_SCALE * 10,
-          borderRadius: 5,
-          marginBottom: WIDTH_SCALE * 5,
-          marginTop: WIDTH_SCALE * 15,
-        }}>
-        <Text
-          style={{
-            color: pColor.white,
-            fontSize: 16,
-            textAlign: 'center',
-            fontWeight: '600',
-          }}>
-          Đăng ký
-        </Text>
-      </MyTouchableOpacity>
-
-      <MyTouchableOpacity
-        onPress={signInWithFacebook}
-        style={{
-          width: '80%',
-          backgroundColor: pColor.facebookBg,
-          paddingVertical: WIDTH_SCALE * 10,
-          borderRadius: 5,
-          marginBottom: WIDTH_SCALE * 5,
-        }}>
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Icon name="facebook" size={35} color={pColor.white} />
-        </View>
-        <Text
-          style={{
-            color: pColor.white,
-            fontSize: 16,
-            textAlign: 'center',
-            fontWeight: '600',
-          }}>
-          Facebook
-        </Text>
-      </MyTouchableOpacity>
-
-      <MyTouchableOpacity
-        onPress={signInWithGoogle}
-        style={{
-          width: '80%',
-          backgroundColor: pColor.googleBg,
-          paddingVertical: WIDTH_SCALE * 10,
-          borderRadius: 5,
-          position: 'relative',
-        }}>
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Icon name="google" size={35} color={pColor.white} />
-        </View>
-        <Text
-          style={{
-            color: pColor.white,
-            fontSize: 16,
-            textAlign: 'center',
-            fontWeight: '600',
-          }}>
-          Google
-        </Text>
-      </MyTouchableOpacity>
     </FixedContainer>
   );
 };

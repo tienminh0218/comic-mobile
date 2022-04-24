@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
-import Icon from 'react-native-vector-icons/Octicons';
+import IconMA from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import FixedContainer from '@components/FixContainer';
 import CustomHeader from '@components/Header';
@@ -127,7 +127,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <Icon name={'eye'} color={pColor.textColor2} size={15} />
+                <IconMA name={'eye'} color={pColor.textColor2} size={15} />
                 <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
                   {' '}
                   {detailState.data?.interacts?.views || 0}{' '}
@@ -139,7 +139,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <Icon name={'heart'} color={pColor.textColor2} size={15} />
+                <IconMA name={'heart'} color={pColor.textColor2} size={15} />
                 <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
                   {' '}
                   {detailState.data?.interacts?.bookMark || 0}{' '}
@@ -151,7 +151,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <Icon name={'thumbsup'} color={pColor.textColor2} size={15} />
+                <IconMA name={'thumb-up'} color={pColor.textColor2} size={15} />
                 <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
                   {' '}
                   {detailState.data?.interacts?.like || 0}{' '}
@@ -193,7 +193,11 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
             borderRightWidth: 1,
             borderRightColor: pColor.bgSubColor,
           }}>
-          <Icon name={'heart'} color={pColor.textColor2} size={15} />
+          <IconMA
+            name={true ? 'cards-heart-outline' : 'cards-heart'}
+            color={pColor.textColor2}
+            size={18}
+          />
         </MyTouchableOpacity>
         <MyTouchableOpacity
           style={{
@@ -203,7 +207,11 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
             borderRightWidth: 1,
             borderRightColor: pColor.bgSubColor,
           }}>
-          <Icon name={'thumbsup'} color={pColor.textColor2} size={15} />
+          <IconMA
+            name={true ? 'thumb-up-outline' : 'thumb-up'}
+            color={pColor.textColor2}
+            size={18}
+          />
         </MyTouchableOpacity>
         <MyTouchableOpacity
           style={{

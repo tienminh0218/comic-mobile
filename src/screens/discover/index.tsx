@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 import { SkypeIndicator } from 'react-native-indicators';
-import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { RootState } from '@stores/store/store';
 import { useAppDispatch, useAppSelector } from '@stores/store/storeHook';
@@ -285,7 +285,7 @@ const ListComic = React.memo(({ data, onGoToChap }: ListComicProps) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <Icon name={'thumbsup'} color={pColor.textColor2} size={15} />
+                <Icon name={'thumb-up'} color={pColor.textColor2} size={15} />
                 <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
                   {' '}
                   {item.interacts.like}{' '}

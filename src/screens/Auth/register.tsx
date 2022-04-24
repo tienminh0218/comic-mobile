@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Image, Text, View } from 'react-native';
-import { Appbar, TextInput } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 
 import FixedContainer from '@components/FixContainer';
@@ -11,21 +11,12 @@ import { WIDTH_SCALE } from '@constants/constants';
 import { IMAGE } from '@constants/image-path';
 import { AllStackScreenProps } from '@navigators/all-stack';
 import { useAuth } from 'src/hooks/useAuth';
+import CustomHeader from '@components/Header';
 
 const Register = (props: AllStackScreenProps<'Register'>) => {
-  const { navigation } = props;
-
-  const handleGoBack = useCallback(() => navigation.goBack(), []);
-
   return (
     <FixedContainer>
-      <Appbar.Header
-        style={{
-          backgroundColor: 'white',
-          elevation: 0,
-        }}>
-        <Appbar.BackAction onPress={handleGoBack} />
-      </Appbar.Header>
+      <CustomHeader title="Đăng ký" />
 
       <View
         style={{

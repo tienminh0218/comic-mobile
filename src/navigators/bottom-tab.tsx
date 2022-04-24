@@ -1,15 +1,18 @@
-import Icon from 'react-native-vector-icons/Octicons';
-import { Alert } from 'react-native';
+// import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Alert, Text } from 'react-native';
 import React from 'react';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Discover from '@screens/discover';
 import Home from '@screens/home';
 import Profile from '@screens/profile';
-import Search from '@screens/search';
 import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '@stores/store/storeHook';
 import { RootState } from '@stores/store/store';
+import { LabelPosition } from '@react-navigation/bottom-tabs/lib/typescript/src/types';
+import { BOTTOM_TAB_TITLE } from '@constants/constants';
+import { pColor } from '@constants/color';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -37,35 +40,36 @@ const BottomTab = () => {
         tabBarLabelPosition: 'below-icon',
       }}>
       <Screen
-        name="Trang chủ"
+        name={BOTTOM_TAB_TITLE.home}
         component={Home}
         options={{
-          tabBarIcon: ({ color, size }) => getIcon('home', { color, size }),
+          tabBarIcon: (props) => getIcon(['home', 'home-outline'], props),
+          tabBarLabel: (props) => (
+            <CustomText {...props} title={BOTTOM_TAB_TITLE.home} />
+          ),
         }}
         key="Home"
       />
       <Screen
-        name="Khám phá"
+        name={BOTTOM_TAB_TITLE.discovery}
         component={Discover}
         options={{
-          tabBarIcon: ({ color, size }) =>
-            getIcon('three-bars', { color, size }),
+          tabBarIcon: (props) =>
+            getIcon(['equalizer', 'equalizer-outline'], props),
+          tabBarLabel: (props) => (
+            <CustomText {...props} title={BOTTOM_TAB_TITLE.discovery} />
+          ),
         }}
         key="Discover"
       />
       <Screen
-        name="Tìm kiếm"
-        component={Search}
-        options={{
-          tabBarIcon: ({ color, size }) => getIcon('search', { color, size }),
-        }}
-        key="Search"
-      />
-      <Screen
-        name="Cá nhân"
+        name={BOTTOM_TAB_TITLE.user}
         component={Profile}
         options={{
-          tabBarIcon: ({ color, size }) => getIcon('person', { color, size }),
+          tabBarIcon: (props) => getIcon(['account', 'account-outline'], props),
+          tabBarLabel: (props) => (
+            <CustomText {...props} title={BOTTOM_TAB_TITLE.user} />
+          ),
         }}
         key="Profile"
         listeners={{
@@ -96,10 +100,31 @@ const BottomTab = () => {
 interface GetIconProps {
   color: string;
   size: number;
+  focused: boolean;
 }
 
-const getIcon = (name: string, { color, size }: GetIconProps) => {
-  return <Icon name={name} color={color} size={size} />;
+const getIcon = (name: string[], { color, size, focused }: GetIconProps) => {
+  return (
+    <Icon name={focused ? name[0] : name[1]} color={'black'} size={size} />
+  );
 };
+
+interface CustomTextProps {
+  focused: boolean;
+  color: string;
+  position: LabelPosition;
+  title: string;
+}
+
+const CustomText = React.memo(({ focused, title }: CustomTextProps) => (
+  <Text
+    style={{
+      fontWeight: focused ? '600' : '400',
+      color: pColor.black,
+      fontSize: 12,
+    }}>
+    {title}
+  </Text>
+));
 
 export default BottomTab;
