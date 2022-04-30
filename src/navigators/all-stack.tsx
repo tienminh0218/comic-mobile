@@ -19,6 +19,7 @@ export type AllStackScreensParams = {
   Register: undefined;
   Detail: undefined;
   Discover: undefined;
+  Profile: undefined;
   ViewChap: undefined | ViewChapProps;
 };
 

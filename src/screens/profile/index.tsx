@@ -11,29 +11,16 @@ import { WIDTH_SCALE } from '@constants/constants';
 import CustomHeader from '@components/Header';
 import { pColor } from '@constants/color';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
+import { useAuth } from '@hooks/useAuth';
+import { AllStackScreenProps } from '@navigators/all-stack';
 
-const Profile = () => {
+const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
   const user = useAppSelector((state: RootState) => state.user.data);
+  const { signOut } = useAuth();
 
   if (!user?.id) {
-    return (
-      <FixedContainer>
-        <View
-          style={{
-            width: WIDTH_SCALE * 60,
-            height: WIDTH_SCALE * 60,
-            borderWidth: 1,
-            overflow: 'hidden',
-            borderRadius: 40,
-          }}>
-          <Image
-            style={{ width: '100%', height: '100%' }}
-            source={IMAGE.default_avatar}
-            resizeMode="contain"
-          />
-        </View>
-      </FixedContainer>
-    );
+    navigation.navigate('Home', undefined);
+    return null;
   }
 
   return (
@@ -54,7 +41,7 @@ const Profile = () => {
             padding: WIDTH_SCALE * 10,
             borderRadius: 8,
             borderWidth: 1,
-            borderColor: pColor.asiaColor,
+            borderColor: pColor.bgSubColor,
           }}>
           <View
             style={{
@@ -63,7 +50,7 @@ const Profile = () => {
               height: WIDTH_SCALE * 50,
               borderRadius: 40 * WIDTH_SCALE,
               borderWidth: 1,
-              borderColor: pColor.asiaColor,
+              borderColor: pColor.bgSubColor,
               overflow: 'hidden',
             }}>
             <FastImage
@@ -72,7 +59,7 @@ const Profile = () => {
                 height: '100%',
               }}
               source={{
-                uri: 'https://www.referenseo.com/wp-content/uploads/2019/03/image-attractive-960x540.jpg',
+                uri: 'https://avatars.dicebear.com/api/adventurer/your-custom-seed.svg',
               }}
             />
           </View>
@@ -82,7 +69,7 @@ const Profile = () => {
               style={{
                 color: pColor.black,
               }}>
-              Name ne
+              {user.email}
             </Text>
           </View>
         </View>
@@ -113,7 +100,10 @@ const Profile = () => {
             customIcon={() => (
               <Icon name="logout" size={25} color={pColor.black} />
             )}
-            onPress={() => console.log('ok chua')}
+            onPress={() => {
+              navigation.navigate('Home', undefined);
+              signOut();
+            }}
           />
         </View>
       </View>

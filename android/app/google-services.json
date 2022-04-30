@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "119260786744-8ebe2d8fb25qdadbk7tsr5u0agc9537g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.comicmobile",
+            "certificate_hash": "bee2bcc19e556f6d084d30a0968e929678c65503"
+          }
+        },
+        {
+          "client_id": "119260786744-efegvkp2sa3kr3lfuh8jr5fopoo7ol04.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.comicmobile",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "119260786744-9m5ibblokcopnarnn2sk9pvalrf9k993.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -23,10 +23,57 @@ import { useAppSelector } from '@stores/store/storeHook';
 import { getGenres } from '@utils/getGenres';
 import MySpinner from '@components/my-spinner';
 
-const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
-  const detailState = useAppSelector((state: RootState) => state.detail);
+export interface InteractOfUserWithComic {
+  isLike?: boolean;
+  isBookmark?: boolean;
+}
 
-  if (detailState.isLoading)
+const DEFAULT_INTERACTS = {
+  isLike: false,
+  isBookmark: false,
+};
+
+const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
+  const detailState = useAppSelector((state: RootState) => state.detail.data);
+  const isLoading = useAppSelector(
+    (state: RootState) => state.detail.isLoading,
+  );
+  const latestChapter = useMemo(
+    () =>
+      detailState?.listChapter[detailState?.listChapter.length - 1]?.idChapter,
+    [detailState],
+  );
+  const interacts = useAppSelector((state: RootState) => state.user.interacts);
+  const [interactOfComic, setInteractOfComic] =
+    useState<InteractOfUserWithComic>(() => {
+      return (
+        interacts.comicsWasInteracted.find(
+          (item) => item.idComic === detailState?.id,
+        ) || DEFAULT_INTERACTS
+      );
+    });
+
+  const getDetailChap = useCallback(
+    async (idChap: string) => {
+      try {
+        MySpinner.show();
+        const result = await API.get(
+          `/titles/${detailState?.id}/views/${idChap}`,
+        );
+        MySpinner.hide();
+        navigation.navigate('ViewChap', {
+          ...result.data,
+        });
+      } catch (error: any) {
+        console.log('error from getDetailChap', error?.message);
+      }
+    },
+    [detailState],
+  );
+
+  console.log('ok chua ', interactOfComic);
+
+  if (isLoading)
     return (
       <FixedContainer
         style={{
@@ -39,7 +86,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
 
   return (
     <FixedContainer>
-      <CustomHeader />
+      <CustomHeader title="Thông tin truyện" />
       <View
         style={{
           flex: 1,
@@ -66,7 +113,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                 height: '100%',
               }}
               source={{
-                uri: detailState.data?.images?.thumbnail.url,
+                uri: detailState?.images?.thumbnail.url,
               }}
               resizeMode="cover"
             />
@@ -84,7 +131,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                 fontSize: 16,
                 fontWeight: 'bold',
               }}>
-              {detailState.data?.name.vnName}
+              {detailState?.name.vnName}
             </Text>
             <Text
               style={{
@@ -92,7 +139,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                 fontSize: 11,
                 marginBottom: WIDTH_SCALE * 5,
               }}>
-              Tên khác: {detailState.data?.name.orgName}
+              Tên khác: {detailState?.name.orgName}
             </Text>
             <View
               style={{
@@ -104,14 +151,14 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                   color: pColor.textColor2,
                   fontSize: 12,
                 }}>
-                Tác giả: {detailState.data?.author}
+                Tác giả: {detailState?.author}
               </Text>
               <Text
                 style={{
                   color: pColor.textColor2,
                   fontSize: 12,
                 }}>
-                Trạng thái: {detailState.data?.status}
+                Trạng thái: {detailState?.status}
               </Text>
             </View>
 
@@ -130,7 +177,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                 <IconMA name={'eye'} color={pColor.textColor2} size={15} />
                 <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
                   {' '}
-                  {detailState.data?.interacts?.views || 0}{' '}
+                  {detailState?.interacts?.views || 0}{' '}
                 </Text>
               </View>
               <View
@@ -142,7 +189,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                 <IconMA name={'heart'} color={pColor.textColor2} size={15} />
                 <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
                   {' '}
-                  {detailState.data?.interacts?.bookMark || 0}{' '}
+                  {detailState?.interacts?.bookMark || 0}{' '}
                 </Text>
               </View>
               <View
@@ -154,12 +201,12 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
                 <IconMA name={'thumb-up'} color={pColor.textColor2} size={15} />
                 <Text style={{ color: pColor.textColor2, marginLeft: 5 }}>
                   {' '}
-                  {detailState.data?.interacts?.like || 0}{' '}
+                  {detailState?.interacts?.like || 0}{' '}
                 </Text>
               </View>
             </View>
 
-            <ListGenre data={detailState.data?.genres || []} />
+            <ListGenre data={detailState?.genres || []} />
           </View>
         </View>
 
@@ -167,7 +214,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
           style={{
             flex: 1,
           }}>
-          <ChapterInfo navigation={navigation} data={detailState.data!} />
+          <ChapterInfo navigation={navigation} data={detailState!} />
         </View>
       </View>
 
@@ -214,6 +261,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
           />
         </MyTouchableOpacity>
         <MyTouchableOpacity
+          onPress={() => getDetailChap(latestChapter!)}
           style={{
             height: '100%',
             flex: 2,

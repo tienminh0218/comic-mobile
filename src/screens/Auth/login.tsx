@@ -13,10 +13,13 @@ import { IMAGE } from '@constants/image-path';
 import { AllStackScreenProps } from '@navigators/all-stack';
 import { useAuth } from '@hooks/useAuth';
 import CustomHeader from '@components/Header';
+import { useAppSelector } from '@stores/store/storeHook';
+import { RootState } from '@stores/store/store';
 
 const Login = (props: AllStackScreenProps<'Login'>) => {
   const { navigation } = props;
   const { signInWithFacebook, signInWithGoogle } = useAuth();
+  const textErr = useAppSelector((state: RootState) => state.user.testError);
 
   return (
     <FixedContainer>
@@ -24,6 +27,9 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
         title="Đăng nhập"
         style={{ marginBottom: 15 * WIDTH_SCALE }}
       />
+
+      <Text style={{ color: 'black' }}>{textErr && 'chua co ne'}</Text>
+
       <View
         style={{
           justifyContent: 'center',

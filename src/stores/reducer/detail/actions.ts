@@ -40,3 +40,18 @@ export const viewChap = createAsyncThunk(
     }
   },
 );
+
+export const interact = createAsyncThunk(
+  'detail/interact',
+  async (
+    { comicId, idChapter }: { comicId: String; idChapter: String },
+    thunk: any,
+  ) => {
+    try {
+      const data = await API.get(`/titles/${comicId}/views/${idChapter}`);
+      return data.data;
+    } catch (error) {
+      return {};
+    }
+  },
+);

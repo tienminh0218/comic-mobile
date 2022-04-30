@@ -13,6 +13,7 @@ import { pColor } from '@constants/color';
 import { useAppDispatch } from '@stores/store/storeHook';
 import { updateUser } from '@stores/reducer/user/userSlice';
 import MySpinner from '@components/my-spinner';
+import { loadInteracts } from '@stores/reducer/user/actions';
 
 let persistor = persistStore(store);
 
@@ -36,6 +37,7 @@ const Main = React.memo(() => {
           email: user?.email || user.displayName!,
         };
         dispatch(updateUser(data));
+        dispatch(loadInteracts(user.uid));
       }
       // dispatch(clearUser());
       console.log('subscriber here --> ', user);

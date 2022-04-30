@@ -14,5 +14,5 @@ export const pColor = {
   modalBorderColor: '#212121',
   modalContentTextColor: '#E0E0E0',
   modalSwitchEnabledColor: '#1890FF',
-  asiaColor: '#1a1a1a',
+  asiaColor: '#f4f4f4',
 };

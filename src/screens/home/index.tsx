@@ -76,78 +76,88 @@ const Home = (props: AllStackScreenProps<'Home'>) => {
         edges={edge}
         style={{
           backgroundColor: pColor.white,
-          paddingHorizontal: WIDTH_SCALE * 10,
         }}>
         <View
           style={{
-            marginTop: WIDTH_SCALE * 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingBottom: WIDTH_SCALE * 20,
+            flex: 1,
+            paddingHorizontal: WIDTH_SCALE * 10,
           }}>
-          <Text
+          <View
             style={{
-              color: pColor.textColor3,
-              fontSize: 20,
-              fontWeight: '600',
+              marginTop: WIDTH_SCALE * 20,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingBottom: WIDTH_SCALE * 20,
             }}>
-            Trang chủ
-          </Text>
-        </View>
-
-        <MyTouchableOpacity
-          onPress={signOut}
-          style={{
-            marginTop: WIDTH_SCALE * 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingBottom: WIDTH_SCALE * 20,
-          }}>
-          <View>
             <Text
               style={{
-                color: 'red',
+                color: pColor.textColor3,
                 fontSize: 20,
                 fontWeight: '600',
               }}>
-              logout
-            </Text>
-
-            <Text
-              style={{
-                color: 'red',
-                fontSize: 20,
-                fontWeight: '600',
-              }}>
-              user id {user?.id}
+              Trang chủ
             </Text>
           </View>
-        </MyTouchableOpacity>
 
-        <RecommendList
-          onNavigateDetail={navigateToDetail}
-          data={data.recommend}
-        />
+          <MyTouchableOpacity
+            onPress={signOut}
+            style={{
+              marginTop: WIDTH_SCALE * 20,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingBottom: WIDTH_SCALE * 20,
+            }}>
+            <View>
+              <Text
+                style={{
+                  color: 'red',
+                  fontSize: 20,
+                  fontWeight: '600',
+                }}>
+                logout
+              </Text>
 
-        <TopView
-          title="Lượt xem"
-          data={data.popular}
-          onNavigateDetail={navigateToDetail}
-        />
+              <Text
+                style={{
+                  color: 'red',
+                  fontSize: 20,
+                  fontWeight: '600',
+                }}>
+                user id {user?.id}
+              </Text>
+            </View>
+          </MyTouchableOpacity>
 
-        <ListItem
-          title="Cập nhật"
-          data={data.lastUpdated}
-          onNavigateDetail={navigateToDetail}
-        />
+          <RecommendList
+            onNavigateDetail={navigateToDetail}
+            data={data.recommend}
+          />
 
-        <ListItem
-          title="New Series "
-          data={data.newSeries}
-          onNavigateDetail={navigateToDetail}
-        />
+          <TopView
+            title="Lượt xem"
+            data={data.popular}
+            onNavigateDetail={navigateToDetail}
+          />
+        </View>
+        <View
+          style={{
+            backgroundColor: '#f4f4f4',
+            paddingHorizontal: WIDTH_SCALE * 10,
+          }}>
+          <ListItem
+            title="Cập nhật"
+            data={data.lastUpdated}
+            onNavigateDetail={navigateToDetail}
+          />
+
+          <ListItem
+            title="New Series "
+            data={data.newSeries}
+            onNavigateDetail={navigateToDetail}
+          />
+        </View>
       </FixedContainer>
     </ScrollView>
   );

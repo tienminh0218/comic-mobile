@@ -6,7 +6,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { InsertNewUser } from '@models/user';
 import { SignInType, SignUpType } from '@models/common';
-import { clearUser } from '@stores/reducer/user/userSlice';
+import { clearUser, updateError } from '@stores/reducer/user/userSlice';
 import { useAppDispatch } from '@stores/store/storeHook';
 
 export const useAuth = () => {
@@ -195,6 +195,7 @@ export const useAuth = () => {
       });
     } catch (error) {
       console.log('269696 error from signInWithGoogle', error);
+      dispatch(updateError(error?.message));
     }
   };
 
