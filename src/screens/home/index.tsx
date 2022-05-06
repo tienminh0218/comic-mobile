@@ -33,6 +33,7 @@ const Home = (props: AllStackScreenProps<'Home'>) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const data = useAppSelector((state: RootState) => state.home.data);
   const user = useAppSelector((state: RootState) => state.user.data);
+  const detailComic = useAppSelector((state: RootState) => state.detail.data);
   const isLoading = useAppSelector((state: RootState) => state.home.isLoading);
   const { signOut } = useAuth();
   const dispatch = useAppDispatch();
@@ -48,7 +49,7 @@ const Home = (props: AllStackScreenProps<'Home'>) => {
       dispatch(loadDetailComic(id));
       navigation.navigate('Detail');
     },
-    [dispatch, navigation],
+    [dispatch, navigation, detailComic],
   );
 
   if (isLoading)

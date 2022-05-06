@@ -1,16 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { FlatList, Text, useWindowDimensions, View, Alert } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import IconMA from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import FixedContainer from '@components/FixContainer';
+import { LoadingScreen } from '@components/loading';
 import CustomHeader from '@components/Header';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { pColor } from '@constants/color';
@@ -19,16 +14,19 @@ import { ComicType } from '@models/comic';
 import { AllStackScreenProps } from '@navigators/all-stack';
 import API from '@services/api';
 import { RootState } from '@stores/store/store';
-import { useAppSelector } from '@stores/store/storeHook';
+import { useAppDispatch, useAppSelector } from '@stores/store/storeHook';
 import { getGenres } from '@utils/getGenres';
 import MySpinner from '@components/my-spinner';
+import { interactWithComic } from '@stores/reducer/user/actions';
+import { InteractsOfUser } from '@stores/reducer/user/userSlice';
 
 export interface InteractOfUserWithComic {
+  idComic?: string;
   isLike?: boolean;
   isBookmark?: boolean;
 }
 
-const DEFAULT_INTERACTS = {
+const DEFAULT_INTERACTS: InteractOfUserWithComic = {
   isLike: false,
   isBookmark: false,
 };
@@ -38,20 +36,16 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
   const isLoading = useAppSelector(
     (state: RootState) => state.detail.isLoading,
   );
+  const interacts = useAppSelector((state: RootState) => state.user.interacts);
+  const userId = useAppSelector((state: RootState) => state.user.data?.id);
   const latestChapter = useMemo(
     () =>
       detailState?.listChapter[detailState?.listChapter.length - 1]?.idChapter,
     [detailState],
   );
-  const interacts = useAppSelector((state: RootState) => state.user.interacts);
   const [interactOfComic, setInteractOfComic] =
-    useState<InteractOfUserWithComic>(() => {
-      return (
-        interacts.comicsWasInteracted.find(
-          (item) => item.idComic === detailState?.id,
-        ) || DEFAULT_INTERACTS
-      );
-    });
+    useState<InteractOfUserWithComic>(DEFAULT_INTERACTS);
+  const dispatch = useAppDispatch();
 
   const getDetailChap = useCallback(
     async (idChap: string) => {
@@ -71,18 +65,55 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
     [detailState],
   );
 
-  console.log('ok chua ', interactOfComic);
+  const handleInteractOfComic = useCallback(
+    (action: InteractOfUserWithComic) => {
+      if (!userId) {
+        Alert.alert(
+          'Thông báo',
+          'Bạn chưa đăng nhập. Vui lòng đăng nhập để thực hiện thao tác này.',
+          [
+            {
+              text: 'Huỷ',
+            },
+            {
+              text: 'Đăng nhập',
+              onPress: () => navigation.navigate('Login'),
+            },
+          ],
+        );
 
-  if (isLoading)
-    return (
-      <FixedContainer
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <ActivityIndicator animating={true} color={pColor.black} />
-      </FixedContainer>
-    );
+        return;
+      }
+
+      const newInteractOfComic = {
+        ...interactOfComic,
+        ...action,
+      };
+      setInteractOfComic(newInteractOfComic);
+      dispatch(interactWithComic(newInteractOfComic as any));
+    },
+    [interactOfComic, userId],
+  );
+
+  const updateInteractState = useCallback(
+    (interacts: InteractsOfUser, id: string) => {
+      return (
+        interacts.comicsWasInteracted.find((item) => item.idComic === id) || {
+          idComic: id,
+          ...DEFAULT_INTERACTS,
+        }
+      );
+    },
+    [detailState, interacts],
+  );
+
+  useEffect(() => {
+    setInteractOfComic(updateInteractState(interacts, detailState?.id!));
+  }, [detailState]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <FixedContainer>
@@ -233,6 +264,9 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
           flexDirection: 'row',
         }}>
         <MyTouchableOpacity
+          onPress={() =>
+            handleInteractOfComic({ isBookmark: !interactOfComic.isBookmark })
+          }
           style={{
             flex: 1,
             justifyContent: 'center',
@@ -241,12 +275,17 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
             borderRightColor: pColor.bgSubColor,
           }}>
           <IconMA
-            name={true ? 'cards-heart-outline' : 'cards-heart'}
+            name={
+              interactOfComic.isBookmark ? 'cards-heart' : 'cards-heart-outline'
+            }
             color={pColor.textColor2}
             size={18}
           />
         </MyTouchableOpacity>
         <MyTouchableOpacity
+          onPress={() =>
+            handleInteractOfComic({ isLike: !interactOfComic.isLike })
+          }
           style={{
             flex: 1,
             justifyContent: 'center',
@@ -255,7 +294,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
             borderRightColor: pColor.bgSubColor,
           }}>
           <IconMA
-            name={true ? 'thumb-up-outline' : 'thumb-up'}
+            name={interactOfComic.isLike ? 'thumb-up' : 'thumb-up-outline'}
             color={pColor.textColor2}
             size={18}
           />

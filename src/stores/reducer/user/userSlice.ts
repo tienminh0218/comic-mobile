@@ -56,7 +56,10 @@ export const userSlice = createSlice({
       loadInteracts.fulfilled,
       (state, action: PayloadAction<InteractsOfUser | undefined>) => {
         if (action.payload !== undefined) {
-          state.interacts = action.payload;
+          state.interacts = {
+            ...state.interacts,
+            ...action.payload,
+          };
         }
       },
     );
