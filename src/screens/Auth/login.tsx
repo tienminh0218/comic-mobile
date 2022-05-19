@@ -19,7 +19,7 @@ import { RootState } from '@stores/store/store';
 const Login = (props: AllStackScreenProps<'Login'>) => {
   const { navigation } = props;
   const { signInWithFacebook, signInWithGoogle } = useAuth();
-  const textErr = useAppSelector((state: RootState) => state.user.testError);
+  // const textErr = useAppSelector((state: RootState) => state.user.testError);
 
   return (
     <FixedContainer>
@@ -28,7 +28,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
         style={{ marginBottom: 15 * WIDTH_SCALE }}
       />
 
-      <Text style={{ color: 'black' }}>{textErr && 'chua co ne'}</Text>
+      {/* <Text style={{ color: 'black' }}>{textErr && 'chua co ne'}</Text> */}
 
       <View
         style={{

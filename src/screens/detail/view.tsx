@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, View, ScrollView, Text } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Octicons';
@@ -12,6 +12,8 @@ import { pColor } from '@constants/color';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import MySpinner from '@components/my-spinner';
 import API from '@services/api';
+import { updateHistory } from '@stores/reducer/user/actions';
+import { useAppDispatch } from '@stores/store/storeHook';
 
 interface INextAndPrev {
   nextId?: string;
@@ -29,6 +31,7 @@ const ViewChap = (props: AllStackScreenProps<'ViewChap'>) => {
   const { chapter, nextAndPrev, comic } = route.params as ViewChapProps;
   const [isShow, setIsShow] = useState(false);
   const offset = useRef<number>(0);
+  const dispatch = useAppDispatch();
 
   const changeShowNav = useCallback(
     (show: boolean) => {
@@ -70,6 +73,14 @@ const ViewChap = (props: AllStackScreenProps<'ViewChap'>) => {
     },
     [changeShowNav, offset],
   );
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      dispatch(updateHistory(comic?.id!));
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   return (
     <FixedContainer edges={['bottom']}>

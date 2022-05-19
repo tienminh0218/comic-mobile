@@ -1,12 +1,11 @@
 import React from 'react';
-import { Text, View, Image, StyleProp, ViewStyle } from 'react-native';
+import { Text, View, StyleProp, ViewStyle } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useAppSelector } from '@stores/store/storeHook';
 import { RootState } from '@stores/store/store';
 import FixedContainer from '@components/FixContainer';
-import { IMAGE } from '@constants/image-path';
 import { WIDTH_SCALE } from '@constants/constants';
 import CustomHeader from '@components/Header';
 import { pColor } from '@constants/color';
@@ -18,15 +17,9 @@ const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
   const user = useAppSelector((state: RootState) => state.user.data);
   const { signOut } = useAuth();
 
-  if (!user?.id) {
-    navigation.navigate('Home', undefined);
-    return null;
-  }
-
   return (
     <FixedContainer>
       <CustomHeader title="Profile" />
-
       <View
         style={{
           flex: 1,
@@ -69,7 +62,7 @@ const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
               style={{
                 color: pColor.black,
               }}>
-              {user.email}
+              {user?.email}
             </Text>
           </View>
         </View>
@@ -92,7 +85,7 @@ const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
             customIcon={() => (
               <Icon name="bookmark-outline" size={25} color={pColor.black} />
             )}
-            onPress={() => console.log('ok chua')}
+            onPress={() => navigation.navigate('Bookmark')}
           />
 
           <ItemSetting
@@ -101,7 +94,7 @@ const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
               <Icon name="logout" size={25} color={pColor.black} />
             )}
             onPress={() => {
-              navigation.navigate('Home', undefined);
+              navigation.navigate('Splash');
               signOut();
             }}
           />

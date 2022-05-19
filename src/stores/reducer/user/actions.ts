@@ -35,7 +35,7 @@ export const interactWithComic = createAsyncThunk<
   any,
   ComicWasInteracted,
   { state: RootState }
->('detail/interactWithComic', async (interaction, thunkAPI) => {
+>('user/interactWithComic', async (interaction, thunkAPI) => {
   try {
     const { idComic } = interaction;
     const list = [...thunkAPI.getState().user.interacts.comicsWasInteracted];
@@ -60,4 +60,14 @@ export const interactWithComic = createAsyncThunk<
     console.log('error from interactWithComic', error.message);
     return undefined;
   }
+});
+
+export const updateHistory = createAsyncThunk<
+  any,
+  string,
+  { state: RootState }
+>('user/historyComic', async (idComic, thunkAPI) => {
+  const historyComicClone = [...thunkAPI.getState().user.interacts.viewed];
+
+  console.log('clone array', historyComicClone);
 });

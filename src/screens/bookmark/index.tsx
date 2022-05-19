@@ -1,14 +1,29 @@
+import React, { useEffect, useState, useCallback } from 'react';
+import {
+  Text,
+  View,
+  Image,
+  StyleProp,
+  ViewStyle,
+  FlatList,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Octicons';
+
+import { AllStackScreenProps } from '@navigators/all-stack';
 import FixedContainer from '@components/FixContainer';
 import CustomHeader from '@components/Header';
-import { ListItem } from '@components/ListComic';
-import { WIDTH_SCALE } from '@constants/constants';
-import { ComicType } from '@models/comic';
 import API from '@services/api';
-import { RootState } from '@stores/store/store';
 import { useAppSelector } from '@stores/store/storeHook';
-import React, { useEffect, useState } from 'react';
+import { RootState } from '@stores/store/store';
+import { pColor } from '@constants/color';
+import MyTouchableOpacity from '@components/MyTouchableOpacity';
+import { HEIGHT_SCALE, WIDTH_SCALE } from '@constants/constants';
+import { fromNowDate } from '@utils/moment';
+import FastImage from 'react-native-fast-image';
+import { ComicType } from '@models/comic';
+import { ListItem } from '@components/ListComic';
 
-const History = () => {
+const Bookmark = ({ navigation }: AllStackScreenProps<'Bookmark'>) => {
   const [comics, setComics] = useState<ComicType[]>([]);
   const user = useAppSelector((state: RootState) => state.user.data);
 
@@ -25,7 +40,7 @@ const History = () => {
 
   return (
     <FixedContainer>
-      <CustomHeader title="Truyện đã xem" />
+      <CustomHeader title="Truyện đã theo dõi" />
 
       <ListItem
         style={{
@@ -43,4 +58,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default Bookmark;
