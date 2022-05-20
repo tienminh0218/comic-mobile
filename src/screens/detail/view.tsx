@@ -76,11 +76,13 @@ const ViewChap = (props: AllStackScreenProps<'ViewChap'>) => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      dispatch(updateHistory(comic?.id!));
+      console.log('call nè');
+
+      dispatch(updateHistory({ idComic: comic?.id!, chapter }));
     }, 3000);
 
     return () => clearTimeout(timeoutId);
-  }, []);
+  }, [comic?.id, chapter.id]);
 
   return (
     <FixedContainer edges={['bottom']}>

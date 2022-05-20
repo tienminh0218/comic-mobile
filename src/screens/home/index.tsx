@@ -101,36 +101,6 @@ const Home = (props: AllStackScreenProps<'Home'>) => {
             </Text>
           </View>
 
-          <MyTouchableOpacity
-            onPress={signOut}
-            style={{
-              marginTop: WIDTH_SCALE * 20,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingBottom: WIDTH_SCALE * 20,
-            }}>
-            <View>
-              <Text
-                style={{
-                  color: 'red',
-                  fontSize: 20,
-                  fontWeight: '600',
-                }}>
-                logout
-              </Text>
-
-              <Text
-                style={{
-                  color: 'red',
-                  fontSize: 20,
-                  fontWeight: '600',
-                }}>
-                user id {user?.id}
-              </Text>
-            </View>
-          </MyTouchableOpacity>
-
           <RecommendList
             onNavigateDetail={navigateToDetail}
             data={data.recommend}

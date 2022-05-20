@@ -1,8 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import firestore from '@react-native-firebase/firestore';
+import moment from 'moment';
 
 import { InteractsOfUser } from './userSlice';
 import { ComicWasInteracted, User } from '@models/user';
+import { Chapter } from '@models/chapter';
 import { RootState } from '@stores/store/store';
 
 export const loadInteracts = createAsyncThunk<
@@ -23,7 +25,16 @@ export const loadInteracts = createAsyncThunk<
         } as User;
         result = {
           comicsWasInteracted: user.histories.comicsWasInteracted,
-          viewed: user.histories.viewed,
+          // viewed: user.histories.viewed,
+          viewed: [
+            {
+              idChapter: '0199ac00-8a4d-4d2f-b820-4a0238bb23f6',
+              idComic: 'laWH3Wo7Do3aFN7HwxgI',
+              listChap: ['0199ac00-8a4d-4d2f-b820-4a0238bb23f6'],
+              createdAt: 1653043057218,
+              updatedAt: 1653043057218,
+            },
+          ],
         };
       }
     });
@@ -64,10 +75,35 @@ export const interactWithComic = createAsyncThunk<
 
 export const updateHistory = createAsyncThunk<
   any,
-  string,
+  { idComic: string; chapter: Chapter },
   { state: RootState }
->('user/historyComic', async (idComic, thunkAPI) => {
+>('user/historyComic', async ({ idComic, chapter }, thunkAPI) => {
   const historyComicClone = [...thunkAPI.getState().user.interacts.viewed];
+  const currentTime = moment().valueOf();
+  const index = historyComicClone.findIndex((v) => v.idComic === idComic);
 
-  console.log('clone array', historyComicClone);
+  if (index !== -1) {
+    /// update
+    const isNewChapterId = historyComicClone[index].listChap.includes(
+      chapter.id!,
+    );
+
+    historyComicClone.splice(index, 1, {
+      ...historyComicClone[index],
+      idChapter: chapter.id!,
+      listChap: !isNewChapterId
+        ? [...historyComicClone[index].listChap, chapter.id!]
+        : historyComicClone[index].listChap,
+      updatedAt: currentTime,
+    });
+  } else {
+    /// add
+    historyComicClone.push({
+      idComic,
+      idChapter: chapter.id!,
+      listChap: [chapter.id!],
+      createdAt: currentTime,
+      updatedAt: currentTime,
+    });
+  }
 });
