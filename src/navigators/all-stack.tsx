@@ -11,6 +11,7 @@ import Splash from '@screens/splash';
 import Detail from '@screens/detail';
 import ViewChap, { ViewChapProps } from '@screens/detail/view';
 import Bookmark from '@screens/bookmark';
+import History from '@screens/history';
 
 export type AllStackScreensParams = {
   Splash: undefined;
@@ -23,6 +24,7 @@ export type AllStackScreensParams = {
   Profile: undefined;
   Bookmark: undefined;
   ViewChap: undefined | ViewChapProps;
+  History: undefined | any;
 };
 
 export type AllStackScreens = keyof AllStackScreensParams;
@@ -41,6 +43,7 @@ const AllStack = () => {
 
       {/* Profile */}
       <Screen name="Bookmark" key={'Bookmark'} component={Bookmark} />
+      <Screen name="History" key={'History'} component={History} />
 
       {/* Auth stack */}
       <Screen name="Login" key={'Login'} component={Login} />

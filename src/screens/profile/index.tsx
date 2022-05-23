@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Text, View, StyleProp, ViewStyle } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,10 +12,28 @@ import { pColor } from '@constants/color';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { useAuth } from '@hooks/useAuth';
 import { AllStackScreenProps } from '@navigators/all-stack';
+import API from '@services/api';
+import MySpinner from '@components/my-spinner';
 
 const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
   const user = useAppSelector((state: RootState) => state.user.data);
   const { signOut } = useAuth();
+
+  const navigateToHistory = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      MySpinner.show();
+
+      const { data } = await API.get(`/users/${user?.id}/histories`);
+      MySpinner.hide();
+      navigation.navigate('History', {
+        data,
+      });
+    } catch (error: any) {
+      console.log('error navigateToHistory', error?.message);
+      MySpinner.hide();
+    }
+  }, []);
 
   return (
     <FixedContainer>
@@ -77,7 +95,7 @@ const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
             customIcon={() => (
               <Icon name="history" size={25} color={pColor.black} />
             )}
-            onPress={() => console.log('ok chua')}
+            onPress={navigateToHistory}
           />
 
           <ItemSetting

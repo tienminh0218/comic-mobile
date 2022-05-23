@@ -39,8 +39,8 @@ export const useAuth = () => {
       });
   };
 
-  const signIn = async ({ email, password }: SignInType) => {
-    auth()
+  const signIn = ({ email, password }: SignInType) => {
+    return auth()
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
         console.log('result from sign in', result);
@@ -52,9 +52,6 @@ export const useAuth = () => {
             },
           ],
         });
-      })
-      .catch((error) => {
-        console.log('269696 error from signIn', error);
       });
   };
 

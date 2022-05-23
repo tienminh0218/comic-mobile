@@ -8,16 +8,28 @@ import genresReducer from './genre/genreSlice';
 import detailReducer from './detail/detailSlice';
 
 const rootReducer = combineReducers({
-  home: homeReducer,
+  home: persistReducer(
+    {
+      key: 'home',
+      storage: AsyncStorage,
+    },
+    homeReducer,
+  ),
   user: userReducer,
-  genre: genresReducer,
-  detail: detailReducer,
+  genre: persistReducer(
+    {
+      key: 'genres',
+      storage: AsyncStorage,
+    },
+    genresReducer,
+  ),
+  detail: persistReducer(
+    {
+      key: 'detail',
+      storage: AsyncStorage,
+    },
+    detailReducer,
+  ),
 });
 
-export default persistReducer(
-  {
-    key: 'root',
-    storage: AsyncStorage,
-  },
-  rootReducer,
-);
+export default rootReducer;

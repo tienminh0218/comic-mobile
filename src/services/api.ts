@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const BASE_URL = 'http://localhost:5000/api';
-const BASE_URL = 'https://comic-server-api.herokuapp.com/api';
+const BASE_URL = 'https://comic-be.herokuapp.com/api';
 
 const initializeAxios = () => {
   const headers: any = {

@@ -78,9 +78,12 @@ export const updateHistory = createAsyncThunk<
   { idComic: string; chapter: Chapter },
   { state: RootState }
 >('user/historyComic', async ({ idComic, chapter }, thunkAPI) => {
+  const userId = thunkAPI.getState().user.data?.id;
   const historyComicClone = [...thunkAPI.getState().user.interacts.viewed];
   const currentTime = moment().valueOf();
   const index = historyComicClone.findIndex((v) => v.idComic === idComic);
+
+  if (!userId) return;
 
   if (index !== -1) {
     /// update
@@ -106,4 +109,8 @@ export const updateHistory = createAsyncThunk<
       updatedAt: currentTime,
     });
   }
+
+  firestore().collection('users').doc(userId).update({
+    'histories.viewed': historyComicClone,
+  });
 });

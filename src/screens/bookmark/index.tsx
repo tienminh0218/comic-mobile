@@ -1,37 +1,26 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import {
-  Text,
-  View,
-  Image,
-  StyleProp,
-  ViewStyle,
-  FlatList,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Octicons';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { AllStackScreenProps } from '@navigators/all-stack';
 import FixedContainer from '@components/FixContainer';
 import CustomHeader from '@components/Header';
-import API from '@services/api';
-import { useAppSelector } from '@stores/store/storeHook';
-import { RootState } from '@stores/store/store';
-import { pColor } from '@constants/color';
-import MyTouchableOpacity from '@components/MyTouchableOpacity';
-import { HEIGHT_SCALE, WIDTH_SCALE } from '@constants/constants';
-import { fromNowDate } from '@utils/moment';
-import FastImage from 'react-native-fast-image';
-import { ComicType } from '@models/comic';
 import { ListItem } from '@components/ListComic';
+import { WIDTH_SCALE } from '@constants/constants';
+import { ComicType } from '@models/comic';
+import { AllStackScreenProps } from '@navigators/all-stack';
+import API from '@services/api';
+import { RootState } from '@stores/store/store';
+import { useAppDispatch, useAppSelector } from '@stores/store/storeHook';
+import { loadDetailComic } from '@stores/reducer/detail/actions';
 
 const Bookmark = ({ navigation }: AllStackScreenProps<'Bookmark'>) => {
   const [comics, setComics] = useState<ComicType[]>([]);
   const user = useAppSelector((state: RootState) => state.user.data);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     (async () => {
       try {
         const result = await API.get(`/users/${user?.id}`);
-        setComics([...result.data, ...result.data, ...result.data]);
+        setComics(result.data);
       } catch (error: any) {
         console.log('error get data from bookmark ', error?.message);
       }
@@ -40,14 +29,22 @@ const Bookmark = ({ navigation }: AllStackScreenProps<'Bookmark'>) => {
 
   return (
     <FixedContainer>
-      <CustomHeader title="Truyện đã theo dõi" />
+      <CustomHeader
+        title="Truyện đã theo dõi"
+        style={{
+          marginBottom: 10,
+        }}
+      />
 
       <ListItem
         style={{
           paddingHorizontal: WIDTH_SCALE * 10,
         }}
         data={comics}
-        onNavigateDetail={(idComic) => {}}
+        onNavigateDetail={(idComic) => {
+          dispatch(loadDetailComic(idComic));
+          navigation.navigate('Detail');
+        }}
         containerProps={{
           keyExtractor: (item, index) => `${item?.id}_${index}`,
           showsHorizontalScrollIndicator: false,

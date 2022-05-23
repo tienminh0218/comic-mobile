@@ -1,4 +1,3 @@
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Image, Text, View } from 'react-native';
@@ -6,15 +5,14 @@ import { TextInput } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 
 import FixedContainer from '@components/FixContainer';
+import CustomHeader from '@components/Header';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import { pColor } from '@constants/color';
 import { WIDTH_SCALE } from '@constants/constants';
 import { IMAGE } from '@constants/image-path';
-import { AllStackScreenProps } from '@navigators/all-stack';
 import { useAuth } from '@hooks/useAuth';
-import CustomHeader from '@components/Header';
-import { useAppSelector } from '@stores/store/storeHook';
-import { RootState } from '@stores/store/store';
+import { AllStackScreenProps } from '@navigators/all-stack';
+import MySpinner from '@components/my-spinner';
 
 const Login = (props: AllStackScreenProps<'Login'>) => {
   const { navigation } = props;
@@ -89,7 +87,8 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
           </Text>
         </MyTouchableOpacity>
 
-        <MyTouchableOpacity
+        {/* //TODO Uncomment */}
+        {/* <MyTouchableOpacity
           onPress={signInWithFacebook}
           style={{
             width: '80%',
@@ -118,9 +117,9 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
             }}>
             Facebook
           </Text>
-        </MyTouchableOpacity>
+        </MyTouchableOpacity> */}
 
-        <MyTouchableOpacity
+        {/* <MyTouchableOpacity
           onPress={signInWithGoogle}
           style={{
             width: '80%',
@@ -149,7 +148,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
             }}>
             Google
           </Text>
-        </MyTouchableOpacity>
+        </MyTouchableOpacity> */}
       </View>
     </FixedContainer>
   );
@@ -170,10 +169,16 @@ const FormInput = React.memo(() => {
     setIsShow(!isShow);
   }, [isShow]);
 
-  const onSubmit = useCallback((data) => {
-    const { email, password } = data;
-
-    signIn({ email, password });
+  const onSubmit = useCallback(async (data) => {
+    MySpinner.show();
+    try {
+      const { email, password } = data;
+      await signIn({ email, password });
+      MySpinner.hide();
+    } catch (error: any) {
+      MySpinner.hide();
+      console.log('error from sign', error);
+    }
   }, []);
 
   return (
@@ -185,6 +190,7 @@ const FormInput = React.memo(() => {
           {
             type: 'email',
             name: 'email',
+            defaultValue: 'tienn@gmail.com',
             rules: {
               required: {
                 value: true,
@@ -200,6 +206,7 @@ const FormInput = React.memo(() => {
           {
             type: isShow ? 'text' : 'password',
             name: 'password',
+            defaultValue: '123123',
             rules: {
               required: {
                 value: true,
@@ -209,6 +216,7 @@ const FormInput = React.memo(() => {
             textInputProps: {
               label: 'Mật khẩu',
               activeOutlineColor: 'black',
+              value: '123123',
               right: (
                 <TextInput.Icon
                   onPress={handleShowPassword}
