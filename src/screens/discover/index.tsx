@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 import { SkypeIndicator } from 'react-native-indicators';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import FastImage from 'react-native-fast-image';
 
 import { RootState } from '@stores/store/store';
 import { useAppDispatch, useAppSelector } from '@stores/store/storeHook';
@@ -11,18 +12,16 @@ import { AllStackScreenProps } from '@navigators/all-stack';
 import CustomHeader from '@components/Header';
 import { WIDTH_SCALE } from '@constants/constants';
 import { ComicType } from '@models/comic';
-import API from '@services/api';
-import FastImage from 'react-native-fast-image';
 import { ListGenre } from '../detail/index';
-import MySpinner from '@components/my-spinner';
 import { loadDetailComic } from '@stores/reducer/detail/actions';
 import FixedContainer from '@components/FixContainer';
+import API from '@services/api';
 
-type Option = 'genre' | 'status' | 'date';
+type Option = 'genres' | 'status' | 'upload';
 interface ListSelected {
-  genre: string;
+  genres: string;
   status: string | number;
-  date: string | number;
+  upload: string | number;
 }
 
 const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
@@ -30,9 +29,9 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
   const dispatch = useAppDispatch();
   const genres = useAppSelector((state: RootState) => state.genre.data);
   const [listSelected, setListSelected] = useState<ListSelected>({
-    genre: '',
+    genres: '',
     status: '',
-    date: '',
+    upload: '',
   });
   const options = genres.map((v) => ({
     label: v.name,
@@ -69,16 +68,23 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
     [],
   );
 
-  const handleChangeFilter = useCallback(
-    (value: string, type: Option) => {
-      const newState = {
-        ...listSelected,
-        [type]: value,
-      };
+  const handleChangeFilter = async (value: string, type: Option) => {
+    const newState = {
+      ...listSelected,
+      [type]: value,
+    };
+    try {
+      setComics([]);
       setListSelected(newState);
-    },
-    [listSelected, setListSelected],
-  );
+      const { data } = await API.get(`/discover/filter`, {
+        params: newState,
+      });
+
+      setComics(data);
+    } catch (error: any) {
+      console.log('error from handleChangeFilter', error.message);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -95,17 +101,15 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
     [dispatch, navigation],
   );
 
-  // console.log('listSelected', listSelected, comics);
-
   return (
     <FixedContainer>
       <CustomHeader title="Thể loại" />
 
       <ItemFilter
         data={options}
-        itemSelected={listSelected.genre}
+        itemSelected={listSelected.genres}
         onSelected={handleChangeFilter}
-        type="genre"
+        type="genres"
       />
 
       <ItemFilter
@@ -117,9 +121,9 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
 
       <ItemFilter
         data={options3}
-        itemSelected={listSelected.date}
+        itemSelected={listSelected.upload}
         onSelected={handleChangeFilter}
-        type="date"
+        type="upload"
       />
 
       <ListComic onGoToChap={navigateToDetail} data={comics} />
@@ -139,16 +143,13 @@ interface ItemFilterProps {
 
 const ItemFilter = React.memo(
   ({ onSelected, data, type, itemSelected }: ItemFilterProps) => {
-    const handleSelected = useCallback(
-      (value: string) => {
-        if (value === itemSelected) {
-          onSelected('', type);
-        } else {
-          onSelected(value, type);
-        }
-      },
-      [itemSelected, data],
-    );
+    const handleSelected = (value: string) => {
+      if (value === itemSelected) {
+        onSelected('', type);
+      } else {
+        onSelected(value, type);
+      }
+    };
 
     const renderItem = useCallback(
       ({ item, index }) => {
@@ -199,7 +200,7 @@ interface ListComicProps {
   onGoToChap: (idComic: string) => void;
 }
 
-const ListComic = React.memo(({ data, onGoToChap }: ListComicProps) => {
+const ListComic = ({ data, onGoToChap }: ListComicProps) => {
   const renderItem = useCallback(
     ({ item, index }) => {
       return (
@@ -296,7 +297,7 @@ const ListComic = React.memo(({ data, onGoToChap }: ListComicProps) => {
         </MyTouchableOpacity>
       );
     },
-    [data],
+    [data, onGoToChap, pColor],
   );
 
   return (
@@ -314,6 +315,6 @@ const ListComic = React.memo(({ data, onGoToChap }: ListComicProps) => {
       )}
     />
   );
-});
+};
 
 export default Discover;
