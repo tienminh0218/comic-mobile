@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Image, Text, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import FixedContainer from '@components/FixContainer';
 import CustomHeader from '@components/Header';
@@ -88,7 +89,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
         </MyTouchableOpacity>
 
         {/* //TODO Uncomment */}
-        {/* <MyTouchableOpacity
+        <MyTouchableOpacity
           onPress={signInWithFacebook}
           style={{
             width: '80%',
@@ -117,9 +118,9 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
             }}>
             Facebook
           </Text>
-        </MyTouchableOpacity> */}
+        </MyTouchableOpacity>
 
-        {/* <MyTouchableOpacity
+        <MyTouchableOpacity
           onPress={signInWithGoogle}
           style={{
             width: '80%',
@@ -148,7 +149,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
             }}>
             Google
           </Text>
-        </MyTouchableOpacity> */}
+        </MyTouchableOpacity>
       </View>
     </FixedContainer>
   );

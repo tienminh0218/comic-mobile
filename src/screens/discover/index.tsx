@@ -26,6 +26,7 @@ interface ListSelected {
 
 const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
   const [comics, setComics] = useState<ComicType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
   const genres = useAppSelector((state: RootState) => state.genre.data);
   const [listSelected, setListSelected] = useState<ListSelected>({
@@ -74,14 +75,16 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
       [type]: value,
     };
     try {
-      setComics([]);
+      setIsLoading(true);
       setListSelected(newState);
       const { data } = await API.get(`/discover/filter`, {
         params: newState,
       });
 
       setComics(data);
+      setIsLoading(false);
     } catch (error: any) {
+      setIsLoading(false);
       console.log('error from handleChangeFilter', error.message);
     }
   };
@@ -90,6 +93,7 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
     (async () => {
       const result = await API.get('/discover');
       setComics(result.data?.lastUpdated);
+      setIsLoading(false);
     })();
   }, []);
 
@@ -126,7 +130,15 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
         type="upload"
       />
 
-      <ListComic onGoToChap={navigateToDetail} data={comics} />
+      {isLoading ? (
+        <SkypeIndicator color={pColor.black} size={40 * WIDTH_SCALE} />
+      ) : (
+        <ListComic
+          onGoToChap={navigateToDetail}
+          data={comics}
+          isLoading={isLoading}
+        />
+      )}
     </FixedContainer>
   );
 };
@@ -198,6 +210,7 @@ const ItemFilter = React.memo(
 interface ListComicProps {
   data: ComicType[];
   onGoToChap: (idComic: string) => void;
+  isLoading: boolean;
 }
 
 const ListComic = ({ data, onGoToChap }: ListComicProps) => {
@@ -310,7 +323,12 @@ const ListComic = ({ data, onGoToChap }: ListComicProps) => {
           style={{
             marginTop: 100,
           }}>
-          <SkypeIndicator color={pColor.black} size={40 * WIDTH_SCALE} />
+          <View style={{ alignItems: 'center' }}>
+            <Text
+              style={{ color: pColor.black, fontSize: 16, fontWeight: '500' }}>
+              No Data
+            </Text>
+          </View>
         </View>
       )}
     />
