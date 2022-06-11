@@ -6,6 +6,7 @@ import { InteractsOfUser } from './userSlice';
 import { ComicWasInteracted, User } from '@models/user';
 import { Chapter } from '@models/chapter';
 import { RootState } from '@stores/store/store';
+import API from '@services/api';
 
 export const loadInteracts = createAsyncThunk<
   InteractsOfUser | undefined,
@@ -113,4 +114,19 @@ export const updateHistory = createAsyncThunk<
   firestore().collection('users').doc(userId).update({
     'histories.viewed': historyComicClone,
   });
+});
+
+export const setGenreForUser = createAsyncThunk<
+  any,
+  string[],
+  { state: RootState }
+>('user/setGenreForUser', async (data, thunkAPI) => {
+  try {
+    const userId = thunkAPI.getState().user.data?.id;
+    if (!userId) return;
+    API.put(`/users/genre/${userId}`, data);
+  } catch (error: any) {
+    console.log('error from user/setGenreForUser', error?.message);
+    return undefined;
+  }
 });

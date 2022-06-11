@@ -31,7 +31,7 @@ export const viewChap = createAsyncThunk(
   'detail/viewChap',
   async ({ comicId, idChapter }: { comicId: String; idChapter: String }) => {
     try {
-      const data = await API.get(`/titles/${comicId}/views/${idChapter}`);
+      const data = await API.get(`/titles/${comicId}/view/${idChapter}`);
       return data.data;
     } catch (error) {
       return {};

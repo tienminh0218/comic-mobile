@@ -19,6 +19,7 @@ import { getGenres } from '@utils/getGenres';
 import MySpinner from '@components/my-spinner';
 import { interactWithComic } from '@stores/reducer/user/actions';
 import { InteractsOfUser } from '@stores/reducer/user/userSlice';
+import * as RootNavigation from '@utils/RootNavigation';
 
 export interface InteractOfUserWithComic {
   idComic?: string;
@@ -52,7 +53,7 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
       try {
         MySpinner.show();
         const result = await API.get(
-          `/titles/${detailState?.id}/views/${idChap}`,
+          `/titles/${detailState?.id}/view/${idChap}`,
         );
         MySpinner.hide();
         navigation.navigate('ViewChap', {
@@ -106,6 +107,8 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
     },
     [detailState, interacts],
   );
+
+  const onNavigateToDiscover = (slug: string) => {};
 
   useEffect(() => {
     setInteractOfComic(updateInteractState(interacts, detailState?.id!));
@@ -237,7 +240,10 @@ const Detail = ({ navigation }: AllStackScreenProps<'Detail'>) => {
               </View>
             </View>
 
-            <ListGenre data={detailState?.genres || []} />
+            <ListGenre
+              data={detailState?.genres || []}
+              onNavigateToDiscover={onNavigateToDiscover}
+            />
           </View>
         </View>
 
@@ -339,7 +345,7 @@ const ChapterInfo = React.memo(({ data, navigation }: ChapterInfoProps) => {
     async (idChap: string) => {
       try {
         MySpinner.show();
-        const result = await API.get(`/titles/${data.id!}/views/${idChap}`);
+        const result = await API.get(`/titles/${data.id!}/view/${idChap}`);
         MySpinner.hide();
         navigation.navigate('ViewChap', {
           ...result.data,
@@ -433,39 +439,47 @@ const ChapterInfo = React.memo(({ data, navigation }: ChapterInfoProps) => {
   );
 });
 
-export const ListGenre = React.memo(({ data }: { data: string[] }) => {
-  const listGenres = useAppSelector((state: RootState) => state.genre.data);
+interface IListGenre {
+  data: string[];
+  onNavigateToDiscover: any;
+}
 
-  return (
-    <FlatList
-      data={getGenres(listGenres, data)}
-      renderItem={({ item }) => {
-        return (
-          <MyTouchableOpacity
-            style={{
-              backgroundColor: pColor.bgSubColor,
-              padding: 4,
-              borderRadius: 4,
-              marginRight: 5,
-              marginTop: 5,
-            }}>
-            <Text
+export const ListGenre = React.memo(
+  ({ data, onNavigateToDiscover }: IListGenre) => {
+    const listGenres = useAppSelector((state: RootState) => state.genre.data);
+
+    return (
+      <FlatList
+        data={getGenres(listGenres, data)}
+        renderItem={({ item }) => {
+          return (
+            <MyTouchableOpacity
+              onPress={() => onNavigateToDiscover(item?.slug)}
               style={{
-                color: pColor.textColor2,
-                fontSize: 10,
+                backgroundColor: pColor.bgSubColor,
+                padding: 4,
+                borderRadius: 4,
+                marginRight: 5,
+                marginTop: 5,
               }}>
-              {item.name}
-            </Text>
-          </MyTouchableOpacity>
-        );
-      }}
-      numColumns={4}
-      style={{
-        flexGrow: 0,
-        flexDirection: 'column',
-      }}
-    />
-  );
-});
+              <Text
+                style={{
+                  color: pColor.textColor2,
+                  fontSize: 10,
+                }}>
+                {item.name}
+              </Text>
+            </MyTouchableOpacity>
+          );
+        }}
+        numColumns={4}
+        style={{
+          flexGrow: 0,
+          flexDirection: 'column',
+        }}
+      />
+    );
+  },
+);
 
 export default Detail;

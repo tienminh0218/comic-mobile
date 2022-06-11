@@ -16,6 +16,7 @@ import { ListGenre } from '../detail/index';
 import { loadDetailComic } from '@stores/reducer/detail/actions';
 import FixedContainer from '@components/FixContainer';
 import API from '@services/api';
+import { formatObj } from '@utils/format';
 
 type Option = 'genres' | 'status' | 'upload';
 interface ListSelected {
@@ -24,7 +25,7 @@ interface ListSelected {
   upload: string | number;
 }
 
-const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
+const Discover = ({ navigation, route }: AllStackScreenProps<'Discover'>) => {
   const [comics, setComics] = useState<ComicType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
@@ -58,11 +59,11 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
   const options3 = useMemo(
     () => [
       {
-        value: 'desc',
+        value: 1,
         label: 'Giảm dần',
       },
       {
-        value: 'asc',
+        value: 2,
         label: 'Tăng dần',
       },
     ],
@@ -78,9 +79,8 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
       setIsLoading(true);
       setListSelected(newState);
       const { data } = await API.get(`/discover/filter`, {
-        params: newState,
+        params: formatObj(newState),
       });
-
       setComics(data);
       setIsLoading(false);
     } catch (error: any) {
@@ -88,6 +88,17 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
       console.log('error from handleChangeFilter', error.message);
     }
   };
+
+  const loadMore = useCallback(async () => {
+    try {
+      const lastId = comics[comics.length - 1].id;
+      const { data } = await API.get(`/discover/getMore?nextPage=${lastId}`);
+      if (data.length === 0) return;
+      setComics([...comics, ...data]);
+    } catch (error: any) {
+      console.log(error?.message);
+    }
+  }, [comics, API]);
 
   useEffect(() => {
     (async () => {
@@ -137,6 +148,8 @@ const Discover = ({ navigation }: AllStackScreenProps<'Discover'>) => {
           onGoToChap={navigateToDetail}
           data={comics}
           isLoading={isLoading}
+          onLoadMore={loadMore}
+          navigate={navigation}
         />
       )}
     </FixedContainer>
@@ -211,11 +224,18 @@ interface ListComicProps {
   data: ComicType[];
   onGoToChap: (idComic: string) => void;
   isLoading: boolean;
+  onLoadMore: () => void;
+  navigate: any;
 }
 
-const ListComic = ({ data, onGoToChap }: ListComicProps) => {
+const ListComic = ({
+  data,
+  onGoToChap,
+  onLoadMore,
+  navigate,
+}: ListComicProps) => {
   const renderItem = useCallback(
-    ({ item, index }) => {
+    ({ item }) => {
       return (
         <MyTouchableOpacity
           onPress={() => onGoToChap(item.id)}
@@ -262,7 +282,10 @@ const ListComic = ({ data, onGoToChap }: ListComicProps) => {
                 }}>
                 {item.name.vnName}
               </Text>
-              <ListGenre data={item.genres} />
+              <ListGenre
+                data={item.genres as any}
+                onNavigateToDiscover={(slug: string) => {}}
+              />
             </View>
 
             <View
@@ -318,6 +341,9 @@ const ListComic = ({ data, onGoToChap }: ListComicProps) => {
       data={data}
       renderItem={renderItem}
       keyExtractor={(v, i) => `${v.id}_${i}`}
+      onEndReached={(info: { distanceFromEnd: number }) => {
+        onLoadMore();
+      }}
       ListEmptyComponent={() => (
         <View
           style={{

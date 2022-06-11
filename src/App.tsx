@@ -14,6 +14,8 @@ import { useAppDispatch } from '@stores/store/storeHook';
 import { updateUser } from '@stores/reducer/user/userSlice';
 import MySpinner from '@components/my-spinner';
 import { loadInteracts } from '@stores/reducer/user/actions';
+import { navigationRef } from '@utils/RootNavigation';
+import API from '@services/api';
 
 let persistor = persistStore(store);
 
@@ -30,7 +32,11 @@ const Main = React.memo(() => {
   };
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((user) => {
+    const getListRecommend = async (userId: string) => {
+      return API.get(`/users/recommend/${userId}`);
+    };
+
+    const subscriber = auth().onAuthStateChanged(async (user) => {
       if (user) {
         const data = {
           id: user.uid,
@@ -38,6 +44,7 @@ const Main = React.memo(() => {
         };
         dispatch(updateUser(data));
         dispatch(loadInteracts(user.uid));
+        console.log('data ne', await getListRecommend(user.uid));
       }
       // dispatch(clearUser());
       console.log('subscriber here --> ', user);
@@ -49,7 +56,7 @@ const Main = React.memo(() => {
     <PersistGate
       loading={<ActivityIndicator animating={true} color={pColor.black} />}
       persistor={persistor}>
-      <NavigationContainer theme={MyTheme}>
+      <NavigationContainer theme={MyTheme} ref={navigationRef}>
         <MySpinner />
         <AllStack />
       </NavigationContainer>

@@ -12,6 +12,7 @@ import Detail from '@screens/detail';
 import ViewChap, { ViewChapProps } from '@screens/detail/view';
 import Bookmark from '@screens/bookmark';
 import History from '@screens/history';
+import Discover from '@screens/discover';
 
 export type AllStackScreensParams = {
   Splash: undefined;
@@ -20,7 +21,12 @@ export type AllStackScreensParams = {
   Login: undefined;
   Register: undefined;
   Detail: undefined;
-  Discover: undefined;
+  Discover:
+    | undefined
+    | {
+        genres?: string;
+        status?: string;
+      };
   Profile: undefined;
   Bookmark: undefined;
   ViewChap: undefined | ViewChapProps;

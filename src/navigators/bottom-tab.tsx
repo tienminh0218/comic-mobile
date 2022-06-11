@@ -7,7 +7,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Discover from '@screens/discover';
 import Home from '@screens/home';
 import Profile from '@screens/profile';
-import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '@stores/store/storeHook';
 import { RootState } from '@stores/store/store';
 import { LabelPosition } from '@react-navigation/bottom-tabs/lib/typescript/src/types';
@@ -16,8 +15,7 @@ import { pColor } from '@constants/color';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
-const BottomTab = () => {
-  const navigation = useNavigation();
+const BottomTab = ({ navigation }: any) => {
   const user = useAppSelector((state: RootState) => state.user.data);
 
   return (

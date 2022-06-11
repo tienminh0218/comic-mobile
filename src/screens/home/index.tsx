@@ -7,7 +7,7 @@ import { AllStackScreenProps } from '@navigators/all-stack';
 import { RootState } from '@stores/store/store';
 import { useAppDispatch, useAppSelector } from '@stores/store/storeHook';
 import { fromNowDate } from '@utils/moment';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   ActivityIndicator,
   FlatList,

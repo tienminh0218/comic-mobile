@@ -24,7 +24,7 @@ const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
     try {
       MySpinner.show();
 
-      const { data } = await API.get(`/users/${user?.id}/histories`);
+      const { data } = await API.get(`/users/history/${user?.id}`);
       MySpinner.hide();
       navigation.navigate('History', {
         data,
@@ -54,7 +54,7 @@ const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
             borderWidth: 1,
             borderColor: pColor.bgSubColor,
           }}>
-          <View
+          {/* <View
             style={{
               marginRight: WIDTH_SCALE * 10,
               width: WIDTH_SCALE * 50,
@@ -73,14 +73,24 @@ const Profile = ({ navigation }: AllStackScreenProps<'Profile'>) => {
                 uri: 'https://avatars.dicebear.com/api/adventurer/your-custom-seed.svg',
               }}
             />
-          </View>
+          </View> */}
 
-          <View>
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
             <Text
               style={{
                 color: pColor.black,
               }}>
-              {user?.email}
+              Xin chào,
+            </Text>
+            <Text
+              style={{
+                color: pColor.black,
+                fontWeight: 'bold',
+              }}>
+              {` ${user?.email}`}
             </Text>
           </View>
         </View>

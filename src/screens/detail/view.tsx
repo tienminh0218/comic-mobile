@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, View, ScrollView, Text } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Octicons';
 
@@ -12,7 +12,7 @@ import { pColor } from '@constants/color';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
 import MySpinner from '@components/my-spinner';
 import API from '@services/api';
-import { updateHistory } from '@stores/reducer/user/actions';
+import { updateHistory, setGenreForUser } from '@stores/reducer/user/actions';
 import { useAppDispatch } from '@stores/store/storeHook';
 
 interface INextAndPrev {
@@ -76,9 +76,8 @@ const ViewChap = (props: AllStackScreenProps<'ViewChap'>) => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      console.log('call nè');
-
       dispatch(updateHistory({ idComic: comic?.id!, chapter }));
+      dispatch(setGenreForUser(comic.genres));
     }, 3000);
 
     return () => clearTimeout(timeoutId);
@@ -127,7 +126,7 @@ const CustomNavBottom = React.memo(
       async (idChap: string) => {
         try {
           MySpinner.show();
-          const result = await API.get(`/titles/${idComic}/views/${idChap}`);
+          const result = await API.get(`/titles/${idComic}/view/${idChap}`);
           MySpinner.hide();
           navigation.navigate('ViewChap', {
             ...result.data,

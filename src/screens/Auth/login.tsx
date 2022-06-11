@@ -89,7 +89,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
         </MyTouchableOpacity>
 
         {/* //TODO Uncomment */}
-        <MyTouchableOpacity
+        {/* <MyTouchableOpacity
           onPress={signInWithFacebook}
           style={{
             width: '80%',
@@ -118,9 +118,9 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
             }}>
             Facebook
           </Text>
-        </MyTouchableOpacity>
+        </MyTouchableOpacity> */}
 
-        <MyTouchableOpacity
+        {/* <MyTouchableOpacity
           onPress={signInWithGoogle}
           style={{
             width: '80%',
@@ -149,7 +149,7 @@ const Login = (props: AllStackScreenProps<'Login'>) => {
             }}>
             Google
           </Text>
-        </MyTouchableOpacity>
+        </MyTouchableOpacity> */}
       </View>
     </FixedContainer>
   );
