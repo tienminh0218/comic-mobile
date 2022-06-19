@@ -11,11 +11,15 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import store from '@stores/store/store';
 import { pColor } from '@constants/color';
 import { useAppDispatch } from '@stores/store/storeHook';
-import { updateUser } from '@stores/reducer/user/userSlice';
+import {
+  updateRecommendUser,
+  updateUser,
+} from '@stores/reducer/user/userSlice';
 import MySpinner from '@components/my-spinner';
 import { loadInteracts } from '@stores/reducer/user/actions';
 import { navigationRef } from '@utils/RootNavigation';
 import API from '@services/api';
+import { ComicType } from './models';
 
 let persistor = persistStore(store);
 
@@ -32,8 +36,8 @@ const Main = React.memo(() => {
   };
 
   useEffect(() => {
-    const getListRecommend = async (userId: string) => {
-      return API.get(`/users/recommend/${userId}`);
+    const getListRecommend = async (userId: string): Promise<ComicType[]> => {
+      return (await API.get(`/users/recommend/${userId}`)).data;
     };
 
     const subscriber = auth().onAuthStateChanged(async (user) => {
@@ -44,7 +48,7 @@ const Main = React.memo(() => {
         };
         dispatch(updateUser(data));
         dispatch(loadInteracts(user.uid));
-        console.log('data ne', await getListRecommend(user.uid));
+        dispatch(updateRecommendUser(await getListRecommend(user.uid)));
       }
       // dispatch(clearUser());
       console.log('subscriber here --> ', user);

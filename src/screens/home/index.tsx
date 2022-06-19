@@ -33,9 +33,11 @@ const Home = (props: AllStackScreenProps<'Home'>) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const data = useAppSelector((state: RootState) => state.home.data);
   const user = useAppSelector((state: RootState) => state.user.data);
+  const listRecommend = useAppSelector(
+    (state: RootState) => state.user.listRecommend,
+  );
   const detailComic = useAppSelector((state: RootState) => state.detail.data);
   const isLoading = useAppSelector((state: RootState) => state.home.isLoading);
-  const { signOut } = useAuth();
   const dispatch = useAppDispatch();
 
   const onRefresh = useCallback(() => {
@@ -63,6 +65,7 @@ const Home = (props: AllStackScreenProps<'Home'>) => {
         <ActivityIndicator animating={true} color={pColor.black} />
       </FixedContainer>
     );
+  // console.log('listRecommend', listRecommend);
 
   return (
     <ScrollView
@@ -128,6 +131,14 @@ const Home = (props: AllStackScreenProps<'Home'>) => {
             data={data.newSeries}
             onNavigateDetail={navigateToDetail}
           />
+
+          {Boolean(user?.id) && (
+            <ListItem
+              title="Recommend "
+              data={listRecommend}
+              onNavigateDetail={navigateToDetail}
+            />
+          )}
         </View>
       </FixedContainer>
     </ScrollView>

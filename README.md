@@ -1,5 +1,5 @@
 ## Build script apk
 
 ```bash
-     ./gradlew assembleRelease
+     ./gradlew clean && ./gradlew assembleRelease
 ```

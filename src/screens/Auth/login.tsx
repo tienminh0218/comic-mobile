@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Image, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ToastManager from 'toastify-react-native';
 
 import FixedContainer from '@components/FixContainer';
 import CustomHeader from '@components/Header';
@@ -18,16 +19,14 @@ import MySpinner from '@components/my-spinner';
 const Login = (props: AllStackScreenProps<'Login'>) => {
   const { navigation } = props;
   const { signInWithFacebook, signInWithGoogle } = useAuth();
-  // const textErr = useAppSelector((state: RootState) => state.user.testError);
 
   return (
     <FixedContainer>
+      <ToastManager />
       <CustomHeader
         title="Đăng nhập"
         style={{ marginBottom: 15 * WIDTH_SCALE }}
       />
-
-      {/* <Text style={{ color: 'black' }}>{textErr && 'chua co ne'}</Text> */}
 
       <View
         style={{

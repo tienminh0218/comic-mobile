@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Image, Text, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
+import ToastManager from 'toastify-react-native';
 
 import FixedContainer from '@components/FixContainer';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
@@ -17,7 +18,7 @@ const Register = (props: AllStackScreenProps<'Register'>) => {
   return (
     <FixedContainer>
       <CustomHeader title="Đăng ký" />
-
+      <ToastManager />
       <View
         style={{
           justifyContent: 'center',

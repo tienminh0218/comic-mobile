@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Toast } from 'toastify-react-native';
 
 import { InsertNewUser } from '@models/user';
 import { SignInType, SignUpType } from '@models/common';
@@ -52,6 +53,10 @@ export const useAuth = () => {
             },
           ],
         });
+      })
+      .catch((error) => {
+        console.log('error sigIn', error.message);
+        Toast.error('Tài khoản hoặc mật khẩu không đúng');
       });
   };
 
@@ -87,12 +92,16 @@ export const useAuth = () => {
         ],
       });
     } catch (error: any) {
+      let errorMsg = '';
       if (error.code === 'auth/email-already-in-use') {
         console.log('That email address is already in use!');
+        errorMsg = 'Email đã tồn tại';
       }
       if (error.code === 'auth/invalid-email') {
         console.log('That email address is invalid!');
+        errorMsg = 'Email không hợp lệ';
       }
+      Toast.error(errorMsg);
       console.log('269696 error from signUp', error);
     }
   };

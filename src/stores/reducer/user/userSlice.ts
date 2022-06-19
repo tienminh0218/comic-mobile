@@ -1,3 +1,4 @@
+import { ComicType } from '@models/comic';
 import { ComicWasInteracted, HistoryViewed } from '@models/user';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { loadInteracts } from './actions';
@@ -17,6 +18,7 @@ export interface InteractsOfUser {
 interface initStateType {
   data: UserState | undefined;
   interacts: InteractsOfUser;
+  listRecommend: ComicType[];
   testError: string;
 }
 
@@ -31,6 +33,7 @@ const initialState: initStateType = {
     comicsWasInteracted: [],
     viewed: [],
   },
+  listRecommend: [],
   testError: '',
 };
 
@@ -46,6 +49,9 @@ export const userSlice = createSlice({
         ...state.data,
         ...action.payload,
       };
+    },
+    updateRecommendUser: (state, action: PayloadAction<ComicType[]>) => {
+      state.listRecommend = action.payload;
     },
     clearUser: (state) => {
       state.data = initialState.data;
@@ -66,5 +72,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { updateUser, clearUser, updateError } = userSlice.actions;
+export const { updateUser, clearUser, updateError, updateRecommendUser } =
+  userSlice.actions;
 export default userSlice.reducer;
