@@ -17,6 +17,7 @@ import { loadDetailComic } from '@stores/reducer/detail/actions';
 import FixedContainer from '@components/FixContainer';
 import API from '@services/api';
 import { formatObj } from '@utils/format';
+import MySpinner from '@components/my-spinner';
 
 type Option = 'genres' | 'status' | 'upload';
 interface ListSelected {
@@ -78,12 +79,15 @@ const Discover = ({ navigation, route }: AllStackScreenProps<'Discover'>) => {
     try {
       setIsLoading(true);
       setListSelected(newState);
+      MySpinner.show();
       const { data } = await API.get(`/discover/filter`, {
         params: formatObj(newState),
       });
+      MySpinner.hide();
       setComics(data);
       setIsLoading(false);
     } catch (error: any) {
+      MySpinner.hide();
       setIsLoading(false);
       console.log('error from handleChangeFilter', error.message);
     }
@@ -91,6 +95,9 @@ const Discover = ({ navigation, route }: AllStackScreenProps<'Discover'>) => {
 
   const loadMore = useCallback(async () => {
     try {
+      const isFilter = Object.keys(formatObj(listSelected)).length > 0;
+      if (isFilter) return;
+
       const lastId = comics[comics.length - 1].id;
       const { data } = await API.get(`/discover/getMore?nextPage=${lastId}`);
       if (data.length === 0) return;
@@ -141,17 +148,13 @@ const Discover = ({ navigation, route }: AllStackScreenProps<'Discover'>) => {
         type="upload"
       />
 
-      {isLoading ? (
-        <SkypeIndicator color={pColor.black} size={40 * WIDTH_SCALE} />
-      ) : (
-        <ListComic
-          onGoToChap={navigateToDetail}
-          data={comics}
-          isLoading={isLoading}
-          onLoadMore={loadMore}
-          navigate={navigation}
-        />
-      )}
+      <ListComic
+        onGoToChap={navigateToDetail}
+        data={comics}
+        isLoading={isLoading}
+        onLoadMore={loadMore}
+        navigate={navigation}
+      />
     </FixedContainer>
   );
 };
