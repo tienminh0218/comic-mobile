@@ -19,7 +19,8 @@ const Bookmark = ({ navigation }: AllStackScreenProps<'Bookmark'>) => {
   useEffect(() => {
     (async () => {
       try {
-        const result = await API.get(`/users/${user?.id}`);
+        const result = await API.get(`/users/bookmark/${user?.id}`);
+        console.log('data ne', result);
         setComics(result.data);
       } catch (error: any) {
         console.log('error get data from bookmark ', error?.message);

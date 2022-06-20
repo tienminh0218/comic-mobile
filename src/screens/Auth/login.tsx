@@ -4,7 +4,7 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ToastManager from 'toastify-react-native';
+import ToastManager from '../../../forked_node_modules/toastify-react-native';
 
 import FixedContainer from '@components/FixContainer';
 import CustomHeader from '@components/Header';

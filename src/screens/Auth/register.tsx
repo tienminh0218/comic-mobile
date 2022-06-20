@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Image, Text, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
-import ToastManager from 'toastify-react-native';
+import ToastManager from '../../../forked_node_modules/toastify-react-native';
 
 import FixedContainer from '@components/FixContainer';
 import MyTouchableOpacity from '@components/MyTouchableOpacity';
